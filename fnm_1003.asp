@@ -1,6 +1,7 @@
 <%@LANGUAGE="VBSCRIPT" CODEPAGE="65001"%>
 
 <%
+Option Explicit
 '##################################################################################################
 '# Declaration of constants
 '##################################################################################################
@@ -10,19 +11,25 @@
 '##################################################################################################
 Dim objFS
 Dim objEDI
-Dim objFieldIdName
+Dim objFieldName
 
 Dim record_line
 Dim record_id
 Dim field_id
 
 Dim objApplication
+Dim objTitleHolder
+Dim objOtherCredit
 Dim objApplicant
 Dim objItem
 Dim strKey
 
 ' Applicant(s)
 Dim ssn
+' Other Credit Type
+Dim typeCode
+'Title Holder
+Dim titleName
 '##################################################################################################
 '# Initializing Page
 '##################################################################################################
@@ -30,15 +37,17 @@ Dim ssn
 '##################################################################################################
 '# Loading Page
 '##################################################################################################
-Set objFieldIdName = SetFieldIdName()
+Set objFieldName = SetFieldIdName()
 
 Set objFS	= Server.CreateObject("Scripting.FileSystemObject")
 '================================================
 '= Application
 '================================================
 Set objApplication = Server.CreateObject("Scripting.Dictionary")
-objApplication.Add "Applicant(s)", Server.CreateObject("Scripting.Dictionary")
-
+objApplication.Add "Applicant(s)"		, Server.CreateObject("Scripting.Dictionary")
+objApplication.Add "Other Credit Type"	, Server.CreateObject("Scripting.Dictionary")
+objApplication.Add "Title Holder"		, Server.CreateObject("Scripting.Dictionary")
+objApplication.Add "Down Payment"		, Server.CreateObject("Scripting.Dictionary")
 '================================================
 '= Reading EDI File
 '================================================
@@ -71,6 +80,20 @@ Do Until objEDI.AtEndOfStream
 			objApplication.Add "00A-020", Mid(record_line,4,1)
 			objApplication.Add "00A-030", Mid(record_line,5,1)
 		'------------------------------------------------
+		'- [01A] I	 Mortgage Type and Terms
+		'------------------------------------------------
+		Case "01A"
+			objApplication.Add "01A-020", Mid(record_line,4,2)     'Mortgage Applied For
+			objApplication.Add "01A-030", Mid(record_line,6,80)    'Mortgage Applied For (Other) 
+			objApplication.Add "01A-040", Mid(record_line,86,30)   'Agency Case Number
+			objApplication.Add "01A-050", Mid(record_line,116,15)  'Case Number
+			objApplication.Add "01A-060", Mid(record_line,131,15)  'Loan Amount
+			objApplication.Add "01A-070", Mid(record_line,146,7)   'Interest Rate
+			objApplication.Add "01A-080", Mid(record_line,153,3)   'No. of Months
+			objApplication.Add "01A-090", Mid(record_line,156,2)   'Amortization Type
+			objApplication.Add "01A-100", Mid(record_line,158,80)  'Amortization Type Other Explanation
+			objApplication.Add "01A-110", Mid(record_line,238,80)  'ARM Textual Description
+		'------------------------------------------------
 		'- [02A] II	Property Information
 		'------------------------------------------------
 		Case "02A" 
@@ -84,10 +107,6 @@ Do Until objEDI.AtEndOfStream
 			objApplication.Add "02A-090", Mid(record_line,105,80)	'Legal Description of Subject Property
 			objApplication.Add "02A-100", Mid(record_line,185,4)	'Year Built
 		'------------------------------------------------
-		'- PAI Property Address Information
-		'------------------------------------------------
-		Case "PAI"
-		'------------------------------------------------
 		'- 02B	II	Purpose of Loan
 		'------------------------------------------------
 		Case "02B" 
@@ -100,8 +119,10 @@ Do Until objEDI.AtEndOfStream
 		'------------------------------------------------
 		'- 02C	II	 Title Holder
 		'------------------------------------------------
-
-			objApplication.Add "02C-020", Mid(record_line,4,60) 'Titleholder Name
+		Case "02C" 
+			titleName = Mid(record_line,4,60)
+			Set objTitleHolder = GetDuplicateData(objApplication("Title Holder"),titleName)
+			objTitleHolder.Add "02C-020", Mid(record_line,4,60) 'Titleholder Name
 		'------------------------------------------------
 		'- 02D	II	 Construction or Refinance Data
 		'------------------------------------------------
@@ -119,9 +140,34 @@ Do Until objEDI.AtEndOfStream
 		'- 02E	II	 Down Payment
 		'------------------------------------------------
 		Case "02E" 
+			typeCode = Mid(record_line,4,2)
+			Set objOtherCredit = GetDuplicateData(objApplication("Down Payment"),typeCode)
 			objApplication.Add "02E-020", Mid(record_line,4,2) 	'Down Payment Type Code
 			objApplication.Add "02E-030", Mid(record_line,6,15) 'Down Payment Amount
 			objApplication.Add "02E-040", Mid(record_line,21,80)'Down Payment Explanation
+		'------------------------------------------------
+		'- 07A	VII	 Details of Transaction
+		'------------------------------------------------
+		Case "07A"
+			objApplication.Add "07A-020", Mid(record_line,4,15)   'a. Purchase price
+			objApplication.Add "07A-030", Mid(record_line,19,15)  'b. Alterations, improvements, repairs
+			objApplication.Add "07A-040", Mid(record_line,34,15)  'c. Land
+			objApplication.Add "07A-050", Mid(record_line,49,15)  'd. Refinance (Inc. debts to be paid off)
+			objApplication.Add "07A-060", Mid(record_line,64,15)  'e. Estimated prepaid items
+			objApplication.Add "07A-070", Mid(record_line,79,15)  'f. Estimated closing costs
+			objApplication.Add "07A-080", Mid(record_line,94,15)  'g. PMI MIP, Funding Fee
+			objApplication.Add "07A-090", Mid(record_line,109,15) 'h. Discount
+			objApplication.Add "07A-100", Mid(record_line,124,15) 'j. Subordinate financing
+			objApplication.Add "07A-110", Mid(record_line,139,15) 'k. Applicant's closing costs paid by Seller
+			objApplication.Add "07A-120", Mid(record_line,154,15) 'n. PMI, MIP, Funding Fee financed
+		'------------------------------------------------
+		'- 07B	VII	 Other Credits
+		'------------------------------------------------
+		Case "07B" 
+			typeCode = Mid(record_line,4,2)
+			Set objOtherCredit = GetDuplicateData(objApplication("Other Credit Type"),typeCode)
+			objOtherCredit.Add "07B-020", Mid(record_line,4,2) 		'Other Credit Type Code
+			objOtherCredit.Add "07B-030", Mid(record_line,6,15) 	'Amount of Other Credit
 		'------------------------------------------------
 		'- 10B	X	 Loan Originator Information
 		'------------------------------------------------
@@ -166,6 +212,87 @@ Do Until objEDI.AtEndOfStream
 			objApplicant.Add "03A-150", Mid(record_line,152,8)		'Date of Birth
 			objApplicant.Add "03A-160", Mid(record_line,160,80)		'Email Address
 		'------------------------------------------------
+		'- 03B	III	 Dependent's Age.
+		'------------------------------------------------
+		Case "03B"
+			ssn = Mid(record_line,4,9)
+			Set objApplicant = GetApplicant(objApplication("Applicant(s)"),ssn)
+			objApplicant.Add "03B-030", Mid(record_line,13,3) 		'Dependant's age
+		'------------------------------------------------
+		'- 03C	III	 Applicant(s) Address
+		'------------------------------------------------
+		Case "03C"
+			ssn = Mid(record_line,4,9)
+			Set objItem = objApplication("Applicant(s)")(ssn)("Address")
+			strKey = Mid(record_line,13,2)
+			objItem.Add strKey, Server.CreateObject("Scripting.Dictionary")
+			objItem(strKey).Add "03C-030", Mid(record_line,13,2)		'(Present/Former)
+			objItem(strKey).Add "03C-040", Mid(record_line,15,50)		'Residence Street Address
+			objItem(strKey).Add "03C-050", Mid(record_line,65,35)		'Residence City
+			objItem(strKey).Add "03C-060", Mid(record_line,100,2)		'Residence State
+			objItem(strKey).Add "03C-070", Mid(record_line,102,5)		'Residence Zip Code
+			objItem(strKey).Add "03C-080", Mid(record_line,107,4)		'Residence Zip Code Plus Four
+			objItem(strKey).Add "03C-090", Mid(record_line,111,1)		'Own/Rent/Living Rent Free
+			objItem(strKey).Add "03C-100", Mid(record_line,112,2)		'No. Yrs.
+			objItem(strKey).Add "03C-110", Mid(record_line,114,2)		'No. Months
+			objItem(strKey).Add "03C-120", Mid(record_line,116,50)		'Country
+		'------------------------------------------------
+		'- 04A	IV	 Primary Current Employer(s)
+		'------------------------------------------------
+		Case "04A"
+			ssn = Mid(record_line,4,9)
+			Set objApplicant = GetApplicant(objApplication("Applicant(s)"),ssn)
+			objApplicant.Add "04A-030", Mid(record_line,13,35)		'Employer Name
+			objApplicant.Add "04A-040", Mid(record_line,48,35)		'Employer Street Address
+			objApplicant.Add "04A-050", Mid(record_line,83,35)		'Employer City
+			objApplicant.Add "04A-060", Mid(record_line,118,2)		'Employer State
+			objApplicant.Add "04A-070", Mid(record_line,120,5)		'Employer Zip Code
+			objApplicant.Add "04A-080", Mid(record_line,125,4)		'Employer Zip Code Plus Four
+			objApplicant.Add "04A-090", Mid(record_line,129,1)		'Self Employed
+			objApplicant.Add "04A-100", Mid(record_line,130,2)		'Yrs. on this job
+			objApplicant.Add "04A-110", Mid(record_line,132,2)		'Months on this job
+			objApplicant.Add "04A-120", Mid(record_line,134,2)		'Yrs. employed in this line of work/profession
+			objApplicant.Add "04A-130", Mid(record_line,136,25)		'Position / Title / Type of Business
+			objApplicant.Add "04A-140", Mid(record_line,161,10)		'Business Phone
+		'------------------------------------------------
+		'- 04B	IV	 Secondary/Previous Employer(s)
+		'------------------------------------------------
+		Case "04B"
+			ssn = Mid(record_line,4,9)
+			Set objApplicant = GetApplicant(objApplication("Applicant(s)"),ssn)
+			objApplicant.Add "04B-030", Mid(record_line,13,35)	'Employer Name
+			objApplicant.Add "04B-040", Mid(record_line,48,35)	'Employer Street Address
+			objApplicant.Add "04B-050", Mid(record_line,83,35)	'Employer City
+			objApplicant.Add "04B-060", Mid(record_line,118,2)	'Employer State
+			objApplicant.Add "04B-070", Mid(record_line,120,5)	'Employer Zip Code
+			objApplicant.Add "04B-080", Mid(record_line,125,4)	'Employer Zip Code Plus Four
+			objApplicant.Add "04B-090", Mid(record_line,129,1)	'Self Employed
+			objApplicant.Add "04B-100", Mid(record_line,130,1)	'Current Employment Flag
+			objApplicant.Add "04B-110", Mid(record_line,131,8)	'From Date
+			objApplicant.Add "04B-120", Mid(record_line,139,8)	'To Date
+			objApplicant.Add "04B-130", Mid(record_line,147,15)	'Monthly Income
+			objApplicant.Add "04B-140", Mid(record_line,162,25)	'Position / Title / Type of Business
+			objApplicant.Add "04B-150", Mid(record_line,187,10)	'Business Phone
+		'------------------------------------------------
+		'- 04B	IV	 Secondary/Previous Employer(s)
+		'------------------------------------------------
+		Case "04B"
+			ssn = Mid(record_line,4,9)
+			Set objApplicant = GetApplicant(objApplication("Applicant(s)"),ssn)
+			objApplicant.Add "04B-030", Mid(record_line,13,35)	'Employer Name
+			objApplicant.Add "04B-040", Mid(record_line,48,35)	'Employer Street Address
+			objApplicant.Add "04B-050", Mid(record_line,83,35)	'Employer City
+			objApplicant.Add "04B-060", Mid(record_line,118,2)	'Employer State
+			objApplicant.Add "04B-070", Mid(record_line,120,5)	'Employer Zip Code
+			objApplicant.Add "04B-080", Mid(record_line,125,4)	'Employer Zip Code Plus Four
+			objApplicant.Add "04B-090", Mid(record_line,129,1)	'Self Employed
+			objApplicant.Add "04B-100", Mid(record_line,130,1)	'Current Employment Flag
+			objApplicant.Add "04B-110", Mid(record_line,131,8)	'From Date
+			objApplicant.Add "04B-120", Mid(record_line,139,8)	'To Date
+			objApplicant.Add "04B-130", Mid(record_line,147,15)	'Monthly Income
+			objApplicant.Add "04B-140", Mid(record_line,162,25)	'Position / Title / Type of Business
+			objApplicant.Add "04B-150", Mid(record_line,187,10)	'Business Phone
+		'------------------------------------------------
 		'- 05H	V	 Present/Proposed Housing Expense 
 		'------------------------------------------------
 		Case "05H"
@@ -173,11 +300,194 @@ Do Until objEDI.AtEndOfStream
 			Set objItem = objApplication("Applicant(s)")(ssn)("Present/Proposed Housing Expences")
 			strKey = Mid(record_line,13,1) & "-" & Mid(record_line,14,2)
 			objItem.Add strKey, Server.CreateObject("Scripting.Dictionary")
-			
 			objItem(strKey).Add "05H-030", Mid(record_line,13,1)	'Present/Proposed Indicator
 			objItem(strKey).Add "05H-040", Mid(record_line,14,2)	'Housing Payment Type Code
 			objItem(strKey).Add "05H-050", Mid(record_line,16,15)	'Housing Payment Amount (Monthly Housing Exp.)
-		
+		'------------------------------------------------
+		'- 05I	V	 Income
+		'------------------------------------------------
+		Case "05I"		
+			ssn = Mid(record_line,4,9)
+			Set objItem = objApplication("Applicant(s)")(ssn)("Income")
+			strKey =  ssn & "-" & Mid(record_line,13,2)
+			objItem.Add strKey, Server.CreateObject("Scripting.Dictionary")
+			objItem(strKey).Add "05I-030", Mid(record_line,13,2)	'Type of Income Code
+			objItem(strKey).Add "05I-040", Mid(record_line,15,15)	'Income Amount (Monthly Income)
+		'------------------------------------------------
+		'- 06A	VI	 For all asset types, enter data in the 06C assets segment.
+		'------------------------------------------------	
+		Case "06A"		
+			ssn = Mid(record_line,4,9)
+			Set objApplicant = GetApplicant(objApplication("Applicant(s)"),ssn)
+			objApplicant.Add "06A-030", Mid(record_line,13,35)	'Cash deposit toward purchase held by
+			objApplicant.Add "06A-040", Mid(record_line,48,15)	'Cash or Market Value
+		'------------------------------------------------
+		'- 06B	VI	 Life Insurance
+		'------------------------------------------------
+		Case "06B"		
+			ssn = Mid(record_line,4,9)
+			Set objApplicant = GetApplicant(objApplication("Applicant(s)"),ssn)
+			objApplicant.Add "06B-030", Mid(record_line,13,30)	'Acct. no.
+			objApplicant.Add "06B-040", Mid(record_line,43,15)	'Life Insurance Cash or Market Value
+			objApplicant.Add "06B-050", Mid(record_line,58,15)	'Life insurance Face Amount	
+		'------------------------------------------------
+		'- 06C	VI	 Assets
+		'------------------------------------------------
+		Case "06C"		
+			ssn = Mid(record_line,4,9)
+			Set objItem = objApplication("Applicant(s)")(ssn)("Assets")
+			strKey =  ssn & "-" & Mid(record_line,13,3) & "-" & Mid(record_line,16,35) & "-" & Mid(record_line,132,30)
+			objItem.Add strKey, Server.CreateObject("Scripting.Dictionary")
+			objItem(strKey).Add "06C-030", Mid(record_line,13,3)	'Account/Asset Type
+			objItem(strKey).Add "06C-040", Mid(record_line,16,35)	'Depository/Stock/Bond Institution Name
+			objItem(strKey).Add "06C-050", Mid(record_line,51,35)	'Depository Street Address
+			objItem(strKey).Add "06C-060", Mid(record_line,86,35)	'Depository City
+			objItem(strKey).Add "06C-070", Mid(record_line,121,2)	'Depository State
+			objItem(strKey).Add "06C-080", Mid(record_line,123,5)	'Depository Zip Code
+			objItem(strKey).Add "06C-090", Mid(record_line,128,4)	'Depository Zip Code Plus Four
+			objItem(strKey).Add "06C-100", Mid(record_line,132,30)	'Acct. no.
+			objItem(strKey).Add "06C-110", Mid(record_line,162,15)	'Cash or Market Value
+			objItem(strKey).Add "06C-120", Mid(record_line,177,7)	'Number of Stock/Bond Shares
+			objItem(strKey).Add "06C-130", Mid(record_line,184,80)	'Asset Description
+		'------------------------------------------------
+		'- 06D	VI	 Automobile(s)
+		'------------------------------------------------
+		Case "06D"		
+			ssn = Mid(record_line,4,9)
+			Set objItem = objApplication("Applicant(s)")(ssn)("Automobile(s)")
+			strKey =  ssn & "-" & Mid(record_line,13,30)
+			objItem.Add strKey, Server.CreateObject("Scripting.Dictionary")
+			objItem(strKey).Add "06D-030", Mid(record_line,13,30)	'Automobile Make/ Model
+			objItem(strKey).Add "06D-040", Mid(record_line,43,4)	'Automobile Year
+			objItem(strKey).Add "06D-050", Mid(record_line,47,15)	'Cash or Market Value
+		'------------------------------------------------
+		'- 06F	VI	 Alimony, Child Support/ Separate Maintenance and/or Job Related Expense(s)
+		'------------------------------------------------
+		Case "06F"		
+			ssn = Mid(record_line,4,9)
+			Set objItem = objApplication("Applicant(s)")(ssn)("Alimony, Child Support/ Separate Maintenance and/or Job Related Expense(s)")
+			strKey =  ssn & "-" & Mid(record_line,13,2)
+			objItem.Add strKey, Server.CreateObject("Scripting.Dictionary")
+			objItem(strKey).Add "06F-030", Mid(record_line,13,3)	'Expense Type Code
+			objItem(strKey).Add "06F-040", Mid(record_line,16,15) 	'Monthly Payment Amount
+			objItem(strKey).Add "06F-050", Mid(record_line,31,3)	'Months Left to Pay
+			objItem(strKey).Add "06F-060", Mid(record_line,34,60)	'Alimony/ Child Support/ Separate Maintenance Owed To
+		'------------------------------------------------
+		'- 06G	VI	 Real Estate Owned
+		'------------------------------------------------
+		Case "06F"		
+			ssn = Mid(record_line,4,9)
+			Set objItem = objApplication("Applicant(s)")(ssn)("Real Estate Owned")
+			strKey =  ssn & "-" & Mid(record_line,13,35)
+			objItem.Add strKey, Server.CreateObject("Scripting.Dictionary")
+			objItem(strKey).Add "06G-030", Mid(record_line,13,35)	'Property Street Address
+			objItem(strKey).Add "06G-040", Mid(record_line,48,35)	'Property City
+			objItem(strKey).Add "06G-050", Mid(record_line,83,2)	'Property State
+			objItem(strKey).Add "06G-060", Mid(record_line,85,5)	'Property Zip Code
+			objItem(strKey).Add "06G-070", Mid(record_line,90,4)	'Property Zip Code Plus Four
+			objItem(strKey).Add "06G-080", Mid(record_line,94,1)	'Property Disposition
+			objItem(strKey).Add "06G-090", Mid(record_line,95,2)	'Type of Property
+			objItem(strKey).Add "06G-100", Mid(record_line,97,15)	'Present Market Value
+			objItem(strKey).Add "06G-110", Mid(record_line,112,15)	'Amount of Mortgages & Liens
+			objItem(strKey).Add "06G-120", Mid(record_line,127,15)	'Gross Rental Income
+			objItem(strKey).Add "06G-130", Mid(record_line,142,15)	'Mortgage Payments
+			objItem(strKey).Add "06G-140", Mid(record_line,157,15)	'Insurance, Maintenance Taxes & Misc.
+			objItem(strKey).Add "06G-150", Mid(record_line,172,25)	'Net Rental Income
+			objItem(strKey).Add "06G-160", Mid(record_line,187,1)	'Current Residence Indicator
+			objItem(strKey).Add "06G-170", Mid(record_line,188,1)	'Subject Property Indicator
+			objItem(strKey).Add "06G-180", Mid(record_line,189,2)	'REO Asset ID
+			objItem(strKey).Add "06G-190", Mid(record_line,191,15)	'Reserved for Future Use
+		'------------------------------------------------
+		'- 06H	VI	 Alias
+		'------------------------------------------------
+		Case "06H"
+			ssn = Mid(record_line,4,9)
+			Set objApplicant = GetApplicant(objApplication("Applicant(s)"),ssn)
+			objApplicant.Add "06H-030", Mid(record_line,13,35) 'Alternate First Name
+			objApplicant.Add "06H-040", Mid(record_line,48,35) 'Alternate Middle Name
+			objApplicant.Add "06H-050", Mid(record_line,83,35) 'Alternate Last Name
+			objApplicant.Add "06H-060", Mid(record_line,118,15)'Reserved for Future Use
+			objApplicant.Add "06H-070", Mid(record_line,153,15)'Reserved for Future Use
+		'------------------------------------------------
+		'- 06L	VI	 Liabilities
+		'------------------------------------------------
+		Case "06L"		
+			ssn = Mid(record_line,4,9)
+			Set objItem = objApplication("Applicant(s)")(ssn)("Liabilities")
+			strKey =  ssn & "-" & Mid(record_line,13,2) & "-" & Mid(record_line,15,35) & "-" &  Mid(record_line,131,30)
+			objItem.Add strKey, Server.CreateObject("Scripting.Dictionary")
+			objItem(strKey).Add "06L-030", Mid(record_line,13,2)  'Liability Type
+			objItem(strKey).Add "06L-040", Mid(record_line,15,35) 'Creditor Name
+			objItem(strKey).Add "06L-050", Mid(record_line,50,35) 'Creditor Street Address
+			objItem(strKey).Add "06L-060", Mid(record_line,85,35) 'Creditor City
+			objItem(strKey).Add "06L-070", Mid(record_line,120,2) 'Creditor State
+			objItem(strKey).Add "06L-080", Mid(record_line,122,5) 'Creditor Zip Code
+			objItem(strKey).Add "06L-090", Mid(record_line,127,4) 'Creditor Zip Code Plus Four
+			objItem(strKey).Add "06L-100", Mid(record_line,131,30)'Acct. no.
+			objItem(strKey).Add "06L-110", Mid(record_line,161,15)'Monthly Payment Amount
+			objItem(strKey).Add "06L-120", Mid(record_line,176,3) 'Months Left to Pay
+			objItem(strKey).Add "06L-130", Mid(record_line,179,15)'Unpaid Balance
+			objItem(strKey).Add "06L-140", Mid(record_line,194,1) 'Liability will be paid prior to closing
+			objItem(strKey).Add "06L-150", Mid(record_line,195,2) 'REO Asset ID
+			objItem(strKey).Add "06L-160", Mid(record_line,197,1) 'Resubordinated Indicator
+			objItem(strKey).Add "06L-170", Mid(record_line,198,1) 'Omitted Indicator
+			objItem(strKey).Add "06L-180", Mid(record_line,199,1) 'Subject Property Indicator
+			objItem(strKey).Add "06L-190", Mid(record_line,200,1) 'Rental Property Indicator
+		'------------------------------------------------
+		'- 06S	VI	 Undrawn HELOC and IPCs
+		'------------------------------------------------
+		Case "06S"
+			ssn = Mid(record_line,4,9)
+			Set objApplicant = GetApplicant(objApplication("Applicant(s)"),ssn)
+			objApplicant.Add "06S-030", Mid(record_line,13,3) 'Summary Amount Type Code
+			objApplicant.Add "06S-040", Mid(record_line,16,15)'Amount
+		'------------------------------------------------
+		'- 08A	VIII Declarations
+		'------------------------------------------------
+		Case "08A"
+			ssn = Mid(record_line,4,9)
+			Set objApplicant = GetApplicant(objApplication("Applicant(s)"),ssn)
+			objApplicant.Add "08A-030", Mid(record_line,13,1)   'a. Are there any outstanding judgments against you?
+			objApplicant.Add "08A-040", Mid(record_line,14,1)   'b. Have you been declared bankrupt within the past 7 years?
+			objApplicant.Add "08A-050", Mid(record_line,15,1)   'c. Have you had property foreclosed upon or given title or deed in lieu thereof in the last 7 years?
+			objApplicant.Add "08A-060", Mid(record_line,16,1)   'd. Are you a party to a lawsuit?
+			objApplicant.Add "08A-070", Mid(record_line,17,1)   'e. Have you directly or indirectly been obligated on any loan
+			objApplicant.Add "08A-080", Mid(record_line,18,1)   'f. Are you presently delinquent or in default on any Federal debt
+			objApplicant.Add "08A-090", Mid(record_line,19,1)   'g. Are you obligated to pay alimony child support or separate maintenance?
+			objApplicant.Add "08A-100", Mid(record_line,20,1)   'h. Is any part of the down payment borrowed?
+			objApplicant.Add "08A-110", Mid(record_line,21,1)   'i. Are you a co-maker or
+			objApplicant.Add "08A-120", Mid(record_line,22,2)   'j. Are you a U.S. citizen?'k. Are you a permanent resident alien?
+			objApplicant.Add "08A-130", Mid(record_line,24,1)   'l. Do you intend to occupy
+			objApplicant.Add "08A-140", Mid(record_line,25,1)   'm. Have you had an ownership interest
+			objApplicant.Add "08A-150", Mid(record_line,26,1)   'm. (1) What type of property
+			objApplicant.Add "08A-160", Mid(record_line,27,2)   'm. (2) How did you hold title
+		'------------------------------------------------
+		'- 08B	VIII Declaration Explanations
+		'------------------------------------------------
+		Case "08B"
+			ssn = Mid(record_line,4,9)
+			Set objItem = objApplication("Applicant(s)")(ssn)("Declaration Explanations")
+			strKey = Mid(record_line,13,2)
+			objItem.Add strKey, Server.CreateObject("Scripting.Dictionary")
+			objItem(strKey).Add "08B-030", Mid(record_line,13,2)   'Declaration Type Code
+			objItem(strKey).Add "08B-040", Mid(record_line,15,255) 'Declaration Explanation
+		'------------------------------------------------
+		'- 09A	IX	 Acknowledgment and Agreement
+		'------------------------------------------------
+		Case "09A"
+			ssn = Mid(record_line,4,9)
+			Set objApplicant = GetApplicant(objApplication("Applicant(s)"),ssn)
+			objApplicant.Add "09A-030", Mid(record_line,13,8) 'Signature Date
+		'------------------------------------------------
+		'- 10A	X	 Information for Government Monitoring Purposes.
+		'------------------------------------------------
+		Case "10A"
+			ssn = Mid(record_line,4,9)
+			Set objApplicant = GetApplicant(objApplication("Applicant(s)"),ssn)
+			objApplicant.Add "10A-030", Mid(record_line,13,1) 	'I do not wish to furnish this information
+			objApplicant.Add "10A-040", Mid(record_line,14,1)	'Ethnicity
+			objApplicant.Add "10A-050", Mid(record_line,15,30)	'Filler
+			objApplicant.Add "10A-060", Mid(record_line,45,1)	'Sex
 	End Select
 	
 Loop
@@ -189,7 +499,7 @@ Call PrintApplication(objApplication)
 '##################################################################################################
 '# Unloading Page
 '##################################################################################################
-Set objFieldIdName = Nothing
+Set objFieldName = Nothing
 Set objFS= Nothing
 
 '##################################################################################################
@@ -203,6 +513,7 @@ Sub PrintApplication(ByRef objApplication)
 	Dim fld_applicant
 	Dim ssn
 	Dim objApplicant
+	Dim other_credit_code
 
 	Dim objItem
 	Dim objFields
@@ -223,6 +534,18 @@ Sub PrintApplication(ByRef objApplication)
 					'------------------------------------------------
 					For Each fld_applicant In objApplicant.Keys
 						Select Case fld_applicant
+							Case "Address"
+								Response.Write "<strong>" & fld_applicant & "</storng><br>"
+								Set objItem = objApplicant(fld_applicant)
+								For Each str_key In objItem.Keys
+									Response.Write "- <strong>" & str_key & "</storng><br>"
+									Set objFields = objItem(str_key)
+									For Each fld_item In objFields.Keys
+										Response.Write fld_item & "(" & objFieldName(fld_item) & "): <strong>" & objFields(fld_item) & "</strong><br>"
+									Next
+								Next
+								Response.Write "<p>"
+								
 							Case "Present/Proposed Housing Expences"
 								Response.Write "<strong>" & fld_applicant & "</storng><br>"
 								Set objItem = objApplicant(fld_applicant)
@@ -230,39 +553,194 @@ Sub PrintApplication(ByRef objApplication)
 									Response.Write "- <strong>" & str_key & "</storng><br>"
 									Set objFields = objItem(str_key)
 									For Each fld_item In objFields.Keys
-										Response.Write fld_item & "(" & objFieldIdName(fld_item) & "): <strong>" & objFields(fld_item) & "</strong><br>"
-										
+										Response.Write fld_item & "(" & objFieldName(fld_item) & "): <strong>" & objFields(fld_item) & "</strong><br>"
 									Next
 								Next
 								Response.Write "<p>"
-							Case "Liability(s)"
-							Case "Income(s)"
+								
+							Case "Income"
+								Response.Write "<strong>" & fld_applicant & "</storng><br>"
+								Set objItem = objApplicant(fld_applicant)
+								For Each str_key In objItem.Keys
+									Response.Write "- <strong>" & str_key & "</storng><br>"
+									Set objFields = objItem(str_key)
+									For Each fld_item In objFields.Keys
+										Response.Write fld_item & "(" & objFieldName(fld_item) & "): <strong>" & objFields(fld_item) & "</strong><br>"
+									Next
+								Next
+								Response.Write "<p>"
+								
+															
+							Case "Assets"
+								Response.Write "<strong>" & fld_applicant & "</storng><br>"
+								Set objItem = objApplicant(fld_applicant)
+								For Each str_key In objItem.Keys
+									Response.Write "- <strong>" & str_key & "</storng><br>"
+									Set objFields = objItem(str_key)
+									For Each fld_item In objFields.Keys
+										Response.Write fld_item & "(" & objFieldName(fld_item) & "): <strong>" & objFields(fld_item) & "</strong><br>"
+									Next
+								Next
+								Response.Write "<p>"
+								
+							Case "Automobile(s)"
+								Response.Write "<strong>" & fld_applicant & "</storng><br>"
+								Set objItem = objApplicant(fld_applicant)
+								For Each str_key In objItem.Keys
+									Response.Write "- <strong>" & str_key & "</storng><br>"
+									Set objFields = objItem(str_key)
+									For Each fld_item In objFields.Keys
+										Response.Write fld_item & "(" & objFieldName(fld_item) & "): <strong>" & objFields(fld_item) & "</strong><br>"
+									Next
+								Next
+								Response.Write "<p>"
+								
+							Case "Alimony, Child Support/ Separate Maintenance and/or Job Related Expense(s)"
+								Response.Write "<strong>" & fld_applicant & "</storng><br>"
+								Set objItem = objApplicant(fld_applicant)
+								For Each str_key In objItem.Keys
+									Response.Write "- <strong>" & str_key & "</storng><br>"
+									Set objFields = objItem(str_key)
+									For Each fld_item In objFields.Keys
+										Response.Write fld_item & "(" & objFieldName(fld_item) & "): <strong>" & objFields(fld_item) & "</strong><br>"
+									Next
+								Next
+								Response.Write "<p>"
+								
+							Case "Real Estate Owned" 
+								Response.Write "<strong>" & fld_applicant & "</storng><br>"
+								Set objItem = objApplicant(fld_applicant)
+								For Each str_key In objItem.Keys
+									Response.Write "- <strong>" & str_key & "</storng><br>"
+									Set objFields = objItem(str_key)
+									For Each fld_item In objFields.Keys
+										Response.Write fld_item & "(" & objFieldName(fld_item) & "): <strong>" & objFields(fld_item) & "</strong><br>"
+									Next
+								Next
+								Response.Write "<p>"
+								
+							Case "Liabilities"
+								Response.Write "<strong>" & fld_applicant & "</storng><br>"
+								Set objItem = objApplicant(fld_applicant)
+								For Each str_key In objItem.Keys
+									Response.Write "- <strong>" & str_key & "</storng><br>"
+									Set objFields = objItem(str_key)
+									For Each fld_item In objFields.Keys
+										Response.Write fld_item & "(" & objFieldName(fld_item) & "): <strong>" & objFields(fld_item) & "</strong><br>"
+									Next
+								Next
+								Response.Write "<p>"
+								
+							Case "Declaration Explanations"
+								Response.Write "<strong>" & fld_applicant & "</storng><br>"
+								Set objItem = objApplicant(fld_applicant)
+								For Each str_key In objItem.Keys
+									Response.Write "- <strong>" & str_key & "</storng><br>"
+									Set objFields = objItem(str_key)
+									For Each fld_item In objFields.Keys
+										Response.Write fld_item & "(" & objFieldName(fld_item) & "): <strong>" & objFields(fld_item) & "</strong><br>"
+									Next
+								Next
+								Response.Write "<p>"
+								
 							Case Else
-								Response.Write fld_applicant & "(" & objFieldIdName(fld_applicant) & "): <strong>" & objApplicant(fld_applicant) & "</strong><br>"
+								Response.Write fld_applicant & "(" & objFieldName(fld_applicant) & "): <strong>" & objApplicant(fld_applicant) & "</strong><br>"
 						End Select
 					Next
 				Next
 				Response.Write ssn & "<hr>"
-			Case Else
-		Response.Write fld_application & "(" & objFieldIdName(fld_application) & "): <strong>" & objApplication(fld_application) & "</strong><br>"
+		Case "Other Credit Type"
+			For Each tpyecode In objApplication("Other Credit Type")
+				Response.Write "<hr>"
+				Response.Write "<h1>Other Credit Code : " & tpyecode & "</h1>"
+				Set objOtherCreditType = objApplication("Other Credit Type")(tpyecode)
+				For Each fld_credit_type In objOtherCreditType.Keys
+					Select Case fld_credit_type
+					Case ""
+						
+					Case Else
+						Response.Write fld_credit_type & "(" & objFieldName(fld_credit_type) & "): <strong>" & objOtherCreditType(fld_credit_type) & "</strong><br>"
+					End Select
+				Next
+			Next
+		Case "Title Holder"
+		For Each tpyecode In objApplication("Title Holder")
+				Response.Write "<hr>"
+				Response.Write "<h1>Title Holder : " & tpyecode & "</h1>"
+				Set objOtherCreditType = objApplication("Title Holder")(tpyecode)
+				For Each fld_credit_type In objOtherCreditType.Keys
+					Select Case fld_credit_type
+					Case ""
+						
+					Case Else
+						Response.Write fld_credit_type & "(" & objFieldName(fld_credit_type) & "): <strong>" & objOtherCreditType(fld_credit_type) & "</strong><br>"
+					End Select
+				Next
+			Next
+		Case "Down Payment"
+		For Each tpyecode In objApplication("Down Payment")
+				Response.Write "<hr>"
+				Response.Write "<h1>Title Holder : " & tpyecode & "</h1>"
+				Set objOtherCreditType = objApplication("Title Holder")(tpyecode)
+				For Each fld_credit_type In objOtherCreditType.Keys
+					Select Case fld_credit_type
+					Case ""
+						
+					Case Else
+						Response.Write fld_credit_type & "(" & objFieldName(fld_credit_type) & "): <strong>" & objOtherCreditType(fld_credit_type) & "</strong><br>"
+					End Select
+				Next
+			Next
+	    Case Else
+		Response.Write fld_application & "(" & objFieldName(fld_application) & "): <strong>" & objApplication(fld_application) & "</strong><br>"
 		End Select
 	Next
 End Sub
 '==================================================================================================
+'= print_code
+'==================================================================================================
+'Function print_code(ByRef fld_applicant)
+'	Set objApplicant = objApplication("Applicant(s)")(ssn)
+'	Response.Write "<strong>" & fld_applicant & "</storng><br>"
+'	Set objItem = objApplicant(fld_applicant)
+'	For Each str_key In objItem.Keys
+'		Response.Write "- <strong>" & str_key & "</storng><br>"
+'		Set objFields = objItem(str_key)
+'		For Each fld_item In objFields.Keys
+'			Response.Write fld_item & "(" & objFieldName(fld_item) & "): <strong>" & objFields(fld_item) & "</strong><br>"
+'		Next
+'	Next
+'	Response.Write "<p>"
+'End Function
+'==================================================================================================
 '= GetApplicant
 '==================================================================================================
 Function GetApplicant(ByRef obj_applicants, ByVal ssn)
-	Dim obj_applicant
 	If obj_applicants.Exists(ssn) = FALSE Then
 		obj_applicants.Add ssn, Server.CreateObject("Scripting.Dictionary")
 		'------------------------------------------------
 		'-
 		'------------------------------------------------
+		obj_applicants(ssn).Add "Address",Server.CreateObject("Scripting.Dictionary")
 		obj_applicants(ssn).Add "Present/Proposed Housing Expences",Server.CreateObject("Scripting.Dictionary")
-		obj_applicants(ssn).Add "Liability(s)",Server.CreateObject("Scripting.Dictionary")
-		obj_applicants(ssn).Add "Income(s)",Server.CreateObject("Scripting.Dictionary")
+		obj_applicants(ssn).Add "Income",Server.CreateObject("Scripting.Dictionary")
+		obj_applicants(ssn).Add "Assets",Server.CreateObject("Scripting.Dictionary")
+		obj_applicants(ssn).Add "Automobile(s)",Server.CreateObject("Scripting.Dictionary")
+		obj_applicants(ssn).Add "Alimony, Child Support/ Separate Maintenance and/or Job Related Expense(s)",Server.CreateObject("Scripting.Dictionary")
+		obj_applicants(ssn).Add "Real Estate Owned",Server.CreateObject("Scripting.Dictionary")
+		obj_applicants(ssn).Add "Liabilities",Server.CreateObject("Scripting.Dictionary")
+		obj_applicants(ssn).Add "Declaration Explanations",Server.CreateObject("Scripting.Dictionary")
 	End If
 	Set GetApplicant = obj_applicants(ssn)
+End Function
+'==================================================================================================
+'= GetOtherCreditType
+'==================================================================================================
+Function GetDuplicateData(ByRef obj_type, ByVal code)
+	If obj_type.Exists(code) = FALSE Then
+		obj_type.Add code, Server.CreateObject("Scripting.Dictionary")
+	End If
+	Set GetDuplicateData = obj_type(code)
 End Function
 '==================================================================================================
 '= LeftCut
@@ -298,7 +776,7 @@ function LeftCut(strString, intCut)
 '= SetFiledIdName
 '==================================================================================================			
 Function SetFieldIdName()
-
+	
 	Set objFieldName = Server.CreateObject("Scripting.Dictionary")
 		objFieldName.Add "00A-020", "The income or assets of a person other than the borrower (including the borrower's spouse) will be used as a basis for loan qualification."
 		objFieldName.Add "00A-030", "The income or assets of the borrower's spouse will not be used as a basis for loan qualification, but his or her liabilities must be considered because the borrower resides in a community property state, the security property is located in a community property state, or the borrower is relying on other property located in a community property state as a basis for repayment of the loan."

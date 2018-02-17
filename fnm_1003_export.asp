@@ -26,193 +26,48 @@ Dim strKey
 
 'Applicant(s)
 Dim ssn
-'Other Credit Type 'Down Payment
+'Other Credit 'Down Payment
 Dim typeCode
 'Title Holder
 Dim titleName
 
 Dim i
+Dim result_str 'Printing EDI
 
-Dim LoanQualificationUsed '00A
-Dim LoanQualificationNotUsed
-Dim MortgageAppliedFor '01A
-Dim MortgageAppliedForOther
-Dim AgencyCaseNumber
-Dim CaseNumber
-Dim LoanAmt
-Dim InterestRate
-Dim NoOfMonth
-Dim AmortizationType
-Dim AmortizationTypeOtherExplain
-Dim ARMTrxtualDesc
-Dim PropStAddress '02A
-Dim PropCity
-Dim PropState
-Dim PropZip
-Dim PropZipPlusFour
-Dim NoOfUnits
-Dim LegalDescSubjPropCode
-Dim LegalDescSubjProp
-Dim YearBuilt
-Dim ReservedFutureUse '02B
-Dim PurposeOfLoan
-Dim PurposeOfLoanOther
-Dim PropWillBe
-Dim MannerTitleWillBeHeld
-Dim EstateWillBeHeldIn
-Dim LeaseholdExpirationDate
+Dim LoanQualificationUsed, LoanQualificationNotUsed '00A
+Dim MortgageAppliedFor, MortgageAppliedForOther, AgencyCaseNumber, CaseNumber,LoanAmt, InterestRate, NoOfMonth, AmortizationType, AmortizationTypeOtherExplain, ARMTextualDesc'01A
+Dim PropStAddress, PropCity, PropState, PropZip, PropZipPlusFour, NoOfUnits, LegalDescSubjPropCode, LegalDescSubjProp, YearBuilt '02A
+Dim ReservedFutureUse, PurposeOfLoan, PurposeOfLoanOther, PropWillBe, MannerTitleWillBeHeld, EstateWillBeHeldIn, LeaseholdExpirationDate '02B
 Dim TitleholderName '02C
-Dim YearAcquired '02D
-Dim OriginalCost
-Dim AmtExistingLiens
-Dim PresentValueOfLot
-Dim CostOfImprovements
-Dim PurposeOfRefinance
-Dim DescribeImprovements
-Dim DescImporvMadeToBeMade
-Dim DescImporvCost
-Dim DownPaymentTypeCode '02E
-Dim DownPaymentamt
-Dim DownPaymentExplanation
-Dim PurchasePrice '07A
-Dim AlterationsImprovRepair
-Dim Land
-Dim Refinance
-Dim EstimatedPrepaidItems
-Dim EstimatedClosingCosts
-Dim PMIMIPFundingFee
-Dim Discount
-Dim SubordinateFinancing
-Dim ClosingCostPaidBySeller
-Dim PMIMIPFundingFeeFinan
-Dim OtherCreditTypeCode '07B
-Dim AmtOfOtherCredit
-Dim LoanOriginatorName '10B
-Dim InterviewDate
-Dim LOPhoneNo
-Dim LOCompanyName
-Dim LOCompanyStAddr
-Dim LOCompanyStAddr2
-Dim LOCompanyCity
-Dim LOCompanyStateCode
-Dim LOCompanyZip
-Dim LOCompanyZipFour
-Dim ApplicantIndicator '03A
-Dim ApplicantFirstName
-Dim ApplicantMidName
-Dim ApplicantLastName
-Dim ApplicantGeneration
-Dim HomePhone
-Dim Age
-Dim YrsSchool
-Dim MaritalStatus
-Dim DependantsNo
-Dim CompletedJoinNotJoin
-Dim CrossRefNumber
-Dim DateOfBirth
-Dim EmailAddr
+Dim YearAcquired, OriginalCost, AmtExistingLiens, PresentValueOfLot, CostOfImprovements, PurposeOfRefinance, DescribeImprovements, DescImporvMadeToBeMade, DescImporvCost '02D
+Dim DownPaymentTypeCode, DownPaymentAmt, DownPaymentExplanation '02E
+Dim PurchasePrice, AlterationsImprovRepair, Land, Refinance, EstimatedPrepaidItems, EstimatedClosingCosts '07A
+Dim PMIMIPFundingFee, Discount, SubordinateFinancing, ClosingCostPaidBySeller, PMIMIPFundingFeeFinan '07A
+Dim OtherCreditTypeCode, AmtOfOtherCredit '07B
+Dim LoanOriginatorName, InterviewDate, LOPhoneNo, LOCompanyName, LOCompanyStAddr, LOCompanyStAddr2, LOCompanyCity, LOCompanyStateCode, LOCompanyZip, LOCompanyZipFour '10B
+Dim ApplicantIndicator, ApplicantFirstName, ApplicantMidName, ApplicantLastName,ApplicantGeneration,HomePhone,Age
+Dim YrsSchool,MaritalStatus,DependantsNo,CompletedJoinNotJoin,CrossRefNumber,DateOfBirth,EmailAddr '03A
 Dim DependantsAge '03B
-Dim PresentFormer '03C
-Dim ResidenceStAddr
-Dim ResidenceCity
-Dim ResidenceState
-Dim ResidenceZip
-Dim ResidenceZipFour
-Dim OwnRentLivingRentFree
-Dim AddrNoYrs
-Dim AddrNoMonth
-Dim ApplicantAddrCounrtry
-Dim EmpName '04A
-Dim EmpStAddr
-Dim EmpCity
-Dim EmpState
-Dim EmpZip
-Dim EmpZipFour
-Dim SelfEmployed
-Dim YrsOnThisJob
-Dim MonthsOnThisJob
-Dim YrsEmpInThisLineWork
-Dim PositionTitleTypeBiz
-Dim BizPhone
-Dim SPrevEmpName '04B
-Dim SPrevEmpStAddr
-Dim SPrevEmpCity
-Dim SPrevEmpState
-Dim SPrevEmpZip
-Dim SPrevEmpZipFour
-Dim SPrevSelfEmployed
-Dim SPrevCurrentEmpFlag
-Dim SPrevFromDate
-Dim SPrevToDate
-Dim SPrevMonthlyIncome
-Dim SPrevPositionTitleTypeBiz
-Dim SPrevBizPhone
-Dim HousingExpensePresentIndicator '05H
-Dim HousingPaymentTypeCode
-Dim HousingPaymentAmt
-Dim TypeOfIncomeCode '05I
-Dim IncomeAmt
-Dim CashDepositPurcHeldBy '06A
-Dim CashOrMarketValue
-Dim LifeInsurAcctNo '06B
-Dim LifeInsurCashMarketVal
-Dim LifeInsurFaceAmt
-Dim AccountAssetType '06C
-Dim DepositoryStockBondName
-Dim DepositoryStAddr
-Dim DepositoryCity
-Dim DepositoryState
-Dim DepositoryZip
-Dim DepositoryZipFour
-Dim AssetAcctNo
-Dim AssetCashMarketVal
-Dim NumberOfStockBondShares
-Dim AssetDesc
-Dim AutomobileMakeModel '06D
-Dim AutomobileYear
-Dim AutomobileCashMarketVal
-Dim MonthlyPaymentAmt '06F
-Dim MonthsLeftToPay
-Dim AlimonyCSSperateOwedTo
-Dim REOPropStAddr '06G
-Dim REOPropCity
-Dim REOPropState
-Dim REOPropZip
-Dim REOPropZipFour
-Dim REOPropDisposition
-Dim REOTypeOfProp
-Dim REOPresentMarketValue
-Dim REOAmtMortgageLiens
-Dim REOGrossRentalIncome
-Dim REOMortgagePayment
-Dim InsurMaintenanceTaxMisc
-Dim REONetRentalIncome
-Dim REOCurResidenceIndicator
-Dim REOSubjectPropIndicator
-Dim REOAssetID
-Dim REOReservedFutureUse
-Dim AliasMidNam '06H
-Dim AliasLastName
-Dim ReservedFutureUse6_1
-Dim ReservedFutureUse6_2
-Dim LiabilityType '06L
-Dim CreditorName
-Dim CreditorStAddr
-Dim CreditorCity
-Dim CreditorState
-Dim CreditorZip
-Dim CreditorZipFour
-Dim LiabilityAcctNo
-Dim LiabilityMonPaymentAmt
-Dim LiabilityMonLeftToPay
-Dim UnpaidBalance
-Dim LiabilityPaidClosing
-Dim ResubordinatedIndicator
-Dim OmittedIndicator
-Dim SubjectPropIndicator
-Dim RentalPropIndicator
-Dim HELOCSummaryAmtTypeCode '06S
-Dim HELEOCAmt
+Dim PresentFormer,ResidenceStAddr,ResidenceCity,ResidenceState,ResidenceZip,ResidenceZipFour,OwnRentLivingRentFree,AddrNoYrs,AddrNoMonth,ApplicantAddrCountry '03C
+Dim EmpName,EmpStAddr,EmpCity,EmpState,EmpZip,EmpZipFour,SelfEmployed,YrsOnThisJob,MonthsOnThisJob, YrsEmpInThisLineWork,PositionTitleTypeBiz,BizPhone '04A
+Dim SPrevEmpName,SPrevEmpStAddr,SPrevEmpCity,SPrevEmpState,SPrevEmpZip,SPrevEmpZipFour,SPrevSelfEmployed,SPrevCurrentEmpFlag
+Dim SPrevFromDate,SPrevToDate,SPrevMonthlyIncome,SPrevPositionTitleTypeBiz,SPrevBizPhone '04B
+Dim HousingExpensePresentIndicator,HousingPaymentTypeCode,HousingPaymentAmt '05H
+Dim TypeOfIncomeCode,IncomeAmt '05I
+Dim CashDepositPurcHeldBy,CashOrMarketValue '06A
+Dim LifeInsurAcctNo,LifeInsurCashMarketVal,LifeInsurFaceAmt '06B
+Dim AccountAssetType,DepositoryStockBondName,DepositoryStAddr,DepositoryCity,DepositoryState,DepositoryZip,DepositoryZipFour,AssetAcctNo
+Dim AssetCashMarketVal,NumberOfStockBondShares,AssetDesc '06C
+Dim AutomobileMakeModel, AutomobileYear,AutomobileCashMarketVal '06D
+Dim MonthlyPaymentAmt,MonthsLeftToPay,AlimonyCSSperateOwedTo '06F
+Dim REOPropStAddr,REOPropCity,REOPropState,REOPropZip,REOPropZipFour,REOPropDisposition,REOTypeOfProp,REOPresentMarketValue
+Dim REOAmtMortgageLiens,REOGrossRentalIncome,REOMortgagePayment,InsurMaintenanceTaxMisc
+Dim REONetRentalIncome,REOCurResidenceIndicator,REOSubjectPropIndicator,REOAssetID,REOReservedFutureUse '06G
+Dim AliasMidNam,AliasLastName,ReservedFutureUse6_1,ReservedFutureUse6_2 '06H
+Dim LiabilityType, CreditorName, CreditorStAddr,CreditorCity,CreditorState,CreditorZip,CreditorZipFour
+Dim LiabilityAcctNo,LiabilityMonPaymentAmt,LiabilityMonLeftToPay,UnpaidBalance,LiabilityPaidClosing,ResubordinatedIndicator
+Dim OmittedIndicator,SubjectPropIndicator,RentalPropIndicator '06L
+Dim HELOCSummaryAmtTypeCode,HELEOCAmt '06S
 Dim DeclarationsA '08A
 Dim DeclarationsB
 Dim DeclarationsC
@@ -228,14 +83,8 @@ Dim DeclarationsL
 Dim DeclarationsM
 Dim DeclarationsM1
 Dim DeclarationsM2
-Dim DeclarationTypeCode '08B
-Dim DeclarationExplanation
-Dim SignatureDate
-Dim IDoNotFurnishMyInfo '10A
-Dim Ethnicity
-Dim Filler
-Dim Sex
-Dim ThisAppWasTakenBy
+Dim DeclarationTypeCode,DeclarationExplanation,SignatureDate '08B
+Dim IDoNotFurnishMyInfo,Ethnicity,Filler,Sex,ThisAppWasTakenBy '10A
 Dim RaceType '10R
 '##################################################################################################
 '# Initializing Page
@@ -252,18 +101,63 @@ Set objFS	= Server.CreateObject("Scripting.FileSystemObject")
 '================================================
 Set objApplication = Server.CreateObject("Scripting.Dictionary")
 objApplication.Add "Applicant(s)"		, Server.CreateObject("Scripting.Dictionary")
-objApplication.Add "Other Credit Type"	, Server.CreateObject("Scripting.Dictionary")
+objApplication.Add "Other Credit"		, Server.CreateObject("Scripting.Dictionary")
 objApplication.Add "Title Holder"		, Server.CreateObject("Scripting.Dictionary")
 objApplication.Add "Down Payment"		, Server.CreateObject("Scripting.Dictionary")
 '================================================
 '= Reading EDI File
 '================================================
 'Set objEDI = objFS.OpenTextFile(Server.MapPath("edi_test/C0101904_1.txt"),1,true)
-Set objEDI = objFS.OpenTextFile(Server.MapPath("edi_test/test.txt"),1,true)
+'Set objEDI = objFS.OpenTextFile(Server.MapPath("edi_test/test.txt"),1,true)
 'Set objEDI = objFS.OpenTextFile(Server.MapPath("edi_test/test2.txt"),1,true)
 'Set objEDI = objFS.OpenTextFile(Server.MapPath("edi_test/test3.txt"),1,true)
-'Set objEDI = objFS.OpenTextFile(Server.MapPath("edi_test/test4.txt"),1,true)
+Set objEDI = objFS.OpenTextFile(Server.MapPath("edi_test/test4.txt"),1,true)
 'Set objEDI = objFS.OpenTextFile(Server.MapPath("edi_test/test5.txt"),1,true)
+
+'================================================
+'= Printing EDI Header
+'================================================
+	'------------------------------------------------
+	'- EH line
+	'------------------------------------------------
+	result_str = ""
+	'Header
+	result_str = result_str & WriteEDI("EH",3,"F")
+	result_str = result_str & WriteEDI("",6,"F")
+	result_str = result_str & WriteEDI("",25,"F")
+	result_str = result_str & WriteEDI("",11,"F")
+	result_str = result_str & WriteEDI("",9,"F")
+	Response.write result_str & "<br>"
+	'------------------------------------------------
+	'- TH line
+	'------------------------------------------------
+	result_str = ""
+	'Header
+	result_str = result_str & WriteEDI("TH",3,"F")
+	result_str = result_str & WriteEDI("T100099-002",11,"F")
+	result_str = result_str & WriteEDI("",9,"F")
+	Response.write result_str & "<br>"
+	'------------------------------------------------
+	'- TPI line
+	'------------------------------------------------
+	result_str = ""
+	'Header
+	result_str = result_str & WriteEDI("TPI",3,"F")
+	result_str = result_str & WriteEDI("1.00",5,"E")
+	result_str = result_str & WriteEDI("01",2,"F")
+	result_str = result_str & WriteEDI("",2,"F")
+	result_str = result_str & WriteEDI("",30,"F")
+	Response.write result_str & "<br>"
+	'------------------------------------------------
+	'- 000 line
+	'------------------------------------------------
+	result_str = ""
+	'Header
+	result_str = result_str & WriteEDI("000",3,"F")
+	result_str = result_str & WriteEDI("1",3,"F")
+	result_str = result_str & WriteEDI("3.20",5,"F")
+	result_str = result_str & WriteEDI("W",1,"F")
+	Response.write result_str & "<br>"
 '================================================
 '= Parsing EDI File
 '================================================
@@ -292,8 +186,18 @@ Do Until objEDI.AtEndOfStream
 			
 			LoanQualificationUsed = Trim(Mid(record_line,4,1))
 			LoanQualificationNotUsed = Trim(Mid(record_line,5,1))
+			'------------------------------------------------
+			'- [00A] printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("00A",3,"F")
+			'The income or assets of a person other than the borrower
+			result_str = result_str & WriteEDI(LoanQualificationUsed,1,"F")
+			'The income or assets of the borrower’s spouse will not be used
+			result_str = result_str & WriteEDI(LoanQualificationNotUsed,1,"F")
 			
-			Response.write record_id & LoanQualificationUsed & LoanQualificationNotUsed & "<br>"
+			Response.write result_str & "<br>"
 		'------------------------------------------------
 		'- [01A] I	 Mortgage Type and Terms
 		'------------------------------------------------
@@ -307,7 +211,7 @@ Do Until objEDI.AtEndOfStream
 			objApplication.Add "01A-080", Mid(record_line,153,3)   'No. of Months [NoOfMonth]
 			objApplication.Add "01A-090", Mid(record_line,156,2)   'Amortization Type [AmortizationType]
 			objApplication.Add "01A-100", Mid(record_line,158,80)  'Amortization Type Other Explanation [AmortizationTypeOtherExplain]
-			objApplication.Add "01A-110", Mid(record_line,238,80)  'ARM Textual Description [ARMTrxtualDesc]
+			objApplication.Add "01A-110", Mid(record_line,238,80)  'ARM Textual Description [ARMTextualDesc]
 			
 			MortgageAppliedFor = Trim(Mid(record_line,4,2))
 			MortgageAppliedForOther = Trim(Mid(record_line,6,80))
@@ -318,35 +222,35 @@ Do Until objEDI.AtEndOfStream
 			NoOfMonth = Trim(Mid(record_line,153,3))
 			AmortizationType = Trim(Mid(record_line,156,2))
 			AmortizationTypeOtherExplain = Trim(Mid(record_line,158,80))
-			ARMTrxtualDesc = Trim(Mid(record_line,238,80))
+			ARMTextualDesc = Trim(Mid(record_line,238,80))
+			'------------------------------------------------
+			'- [01A] Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("01A",3,"F")
+			'Mortgage Applied For
+			result_str = result_str & WriteEDI(MortgageAppliedFor,2,"F")
+			'Mortgage Applied For (Other)
+			result_str = result_str & WriteEDI(MortgageAppliedForOther,80,"F")
+			'Agency Case Number
+			result_str = result_str & WriteEDI(AgencyCaseNumber,30,"F")
+			'Case Number
+			result_str = result_str & WriteEDI(CaseNumber,15,"F")
+			'Loan Amount
+			result_str = result_str & WriteEDI(LoanAmt,15,"E")
+			'Interest Rate
+			result_str = result_str & WriteEDI(InterestRate,7,"E")
+			'No. of Months
+			result_str = result_str & WriteEDI(NoOfMonth,3,"F")
+			'Amortization Type
+			result_str = result_str & WriteEDI(AmortizationType,2,"F")
+			'Amortization Type Other Explanation
+			result_str = result_str & WriteEDI(AmortizationTypeOtherExplain,80,"F")
+			'ARM Textual Description
+			result_str = result_str & WriteEDI(ARMTextualDesc,80,"F")
 			
-			For i=0 to 80-len(MortgageAppliedForOther)-1
-			 MortgageAppliedForOther = "&nbsp;" & MortgageAppliedForOther 
-			Next	
-			For i=0 to 30-len(AgencyCaseNumber)-1
-			 AgencyCaseNumber = AgencyCaseNumber & "&nbsp;"
-			Next
-			For i=0 to 15-len(CaseNumber)-1
-			 CaseNumber = CaseNumber & "&nbsp;"
-			Next
-			For i=0 to 15-len(LoanAmt)-1
-			 LoanAmt = "&nbsp;" & LoanAmt
-			Next
-			For i=0 to 7-len(InterestRate)-1
-			 InterestRate = "&nbsp;" & InterestRate
-			Next
-			For i=0 to 3-len(NoOfMonth)-1
-			 NoOfMonth = "&nbsp;" & NoOfMonth
-			Next
-			For i=0 to 2-len(AmortizationType)-1
-			 AmortizationType = "&nbsp;" & AmortizationType
-			Next
-			For i=0 to 80-len(AmortizationTypeOtherExplain)-1
-			 AmortizationTypeOtherExplain = "&nbsp;" & AmortizationTypeOtherExplain
-			Next
-			
-			Response.write record_id & MortgageAppliedFor & MortgageAppliedForOther & AgencyCaseNumber &_
-			CaseNumber & LoanAmt & InterestRate & NoOfMonth & AmortizationType & AmortizationTypeOtherExplain & "<br>"
+			Response.write result_str & "<br>"
 		'------------------------------------------------
 		'- [02A] II	Property InFormation
 		'------------------------------------------------
@@ -370,37 +274,32 @@ Do Until objEDI.AtEndOfStream
 			LegalDescSubjPropCode = Trim(Mid(record_line,103,2))
 			LegalDescSubjProp = Trim(Mid(record_line,105,80))
 			YearBuilt = Trim(Mid(record_line,185,4))
+			'------------------------------------------------
+			'- [02A] Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("02A",3,"F")
+			'Property Street Address
+			result_str = result_str & WriteEDI(PropStAddress,50,"F")
+			'Property City
+			result_str = result_str & WriteEDI(PropCity,35,"F")
+			'Property State 
+			result_str = result_str & WriteEDI(PropState,2,"F")
+			'Property Zip Code
+			result_str = result_str & WriteEDI(PropZip,5,"F")
+			'Property Zip Code Plus Four
+			result_str = result_str & WriteEDI(PropZipPlusFour,4,"F")
+			'No. of Units
+			result_str = result_str & WriteEDI(NoOfUnits,3,"F")
+			'Legal Description of Subject Property Code
+			result_str = result_str & WriteEDI(LegalDescSubjPropCode,2,"F")
+			'Legal Description of Subject Property
+			result_str = result_str & WriteEDI(LegalDescSubjProp,80,"F")
+			'Year Built
+			result_str = result_str & WriteEDI(YearBuilt,4,"F")
 			
-			For i=0 to 50-len(PropStAddress)-1
-			 PropStAddress = PropStAddress & "&nbsp;"
-			Next
-			For i=0 to 35-len(PropCity)-1
-			 PropCity = PropCity & "&nbsp;"
-			Next
-			For i=0 to 2-len(PropState)-1
-			 PropState = PropState & "&nbsp;"
-			Next
-			For i=0 to 5-len(PropZip)-1
-			 PropZip = PropZip & "&nbsp;"
-			Next
-			For i=0 to 4-len(PropZipPlusFour)-1
-			 PropZipPlusFour = PropZipPlusFour & "&nbsp;"
-			Next
-			For i=0 to 3-len(NoOfUnits)-1
-			 NoOfUnits = NoOfUnits & "&nbsp;"
-			Next
-			For i=0 to 2-len(LegalDescSubjPropCode)-1
-			 LegalDescSubjPropCode = LegalDescSubjPropCode & "&nbsp;"
-			Next
-			For i=0 to 80-len(LegalDescSubjProp)-1
-			 LegalDescSubjProp = LegalDescSubjProp & "&nbsp;"
-			Next
-			For i=0 to 4-len(YearBuilt)-1
-			 YearBuilt = YearBuilt & "&nbsp;"
-			Next
-			
-			Response.write record_id & PropStAddress & PropCity & PropState & PropZip & PropZipPlusFour & NoOfUnits &_
-			LegalDescSubjPropCode & LegalDescSubjProp & YearBuilt & "<br>"
+			Response.write result_str & "<br>"
 		'------------------------------------------------
 		'- [02B]	II	Purpose of Loan
 		'------------------------------------------------
@@ -420,31 +319,28 @@ Do Until objEDI.AtEndOfStream
 			MannerTitleWillBeHeld = Trim(Mid(record_line,89,60))
 			EstateWillBeHeldIn = Trim(Mid(record_line,149,1))
 			LeaseholdExpirationDate = Trim(Mid(record_line,150,8))
+			'------------------------------------------------
+			'- [02B] Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("02B",3,"F")
+			'Reserved for Future Use
+			result_str = result_str & WriteEDI("",2,"F")
+			'Purpose of Loan
+			result_str = result_str & WriteEDI(PurposeOfLoan,2,"F")
+			'Purpose of Loan (Other)
+			result_str = result_str & WriteEDI(PurposeOfLoanOther,80,"F")
+			'Property will be
+			result_str = result_str & WriteEDI(PropWillBe,1,"F")
+			'Manner in which Title will be held
+			result_str = result_str & WriteEDI(MannerTitleWillBeHeld,60,"F")
+			'Estate will be held in
+			result_str = result_str & WriteEDI(EstateWillBeHeldIn,1,"F")
+			'(Estate will be held in) Leasehold expiration date
+			result_str = result_str & WriteEDI(LeaseholdExpirationDate,8,"E")
 			
-			For i=0 to 2-len(ReservedFutureUse)-1
-			 ReservedFutureUse = "&nbsp;" & ReservedFutureUse 
-			Next
-			For i=0 to 2-len(PurposeOfLoan)-1
-			 PurposeOfLoan = "&nbsp;" & PurposeOfLoan
-			Next
-			For i=0 to 80-len(PurposeOfLoanOther)-1
-			 PurposeOfLoanOther = "&nbsp;" & PurposeOfLoanOther 
-			Next
-			For i=0 to 1-len(PropWillBe)-1
-			 PropWillBe = "&nbsp;" & PropWillBe
-			Next
-			For i=0 to 60-len(MannerTitleWillBeHeld)-1
-			 MannerTitleWillBeHeld = MannerTitleWillBeHeld & "&nbsp;"
-			Next
-			For i=0 to 1-len(EstateWillBeHeldIn)-1
-			 EstateWillBeHeldIn = "&nbsp;" & EstateWillBeHeldIn 
-			Next
-			For i=0 to 8-len(LeaseholdExpirationDate)-1
-			 LeaseholdExpirationDate = "&nbsp;" & LeaseholdExpirationDate 
-			Next
-			
-			Response.write record_id & ReservedFutureUse & PurposeOfLoan & PurposeOfLoanOther & PropWillBe & MannerTitleWillBeHeld &_
-			EstateWillBeHeldIn & LeaseholdExpirationDate & "<br>"
+			Response.write result_str & "<br>"
 		'------------------------------------------------
 		'- [02C]	II	 Title Holder
 		'------------------------------------------------
@@ -453,7 +349,17 @@ Do Until objEDI.AtEndOfStream
 			Set objTitleHolder = GetDuplicateData(objApplication("Title Holder"),titleName)
 			objTitleHolder.Add "02C-020", Mid(record_line,4,60) 'Titleholder Name [TitleholderName]
 			
-			Response.write record_id & titleName & "<br>"
+			titleName = Trim(Mid(record_line,4,60))
+			'------------------------------------------------
+			'- [02C] Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("02C",3,"F")
+			'Titleholder Name
+			result_str = result_str & WriteEDI(titleName,60,"F")
+			
+			Response.write result_str & "<br>"
 		'------------------------------------------------
 		'- [02D]	II	 Construction or Refinance Data
 		'------------------------------------------------
@@ -477,37 +383,32 @@ Do Until objEDI.AtEndOfStream
 			DescribeImprovements = Trim(Mid(record_line,70,80))
 			DescImporvMadeToBeMade = Trim(Mid(record_line,150,1))
 			DescImporvCost = Trim(Mid(record_line,151,15))
+			'------------------------------------------------
+			'- [02D] Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("02D",3,"F")
+			'Year Lot Acquired (Construction) or Year Acquired (Refinance)
+			result_str = result_str & WriteEDI(YearAcquired,4,"F")
+			'Original Cost (Construction or Refinance)
+			result_str = result_str & WriteEDI(OriginalCost,15,"E")
+			'Amount Existing Liens (Construction or Refinance)
+			result_str = result_str & WriteEDI(AmtExistingLiens,15,"E")
+			'(a) Present Value of Lot
+			result_str = result_str & WriteEDI(PresentValueOfLot,15,"E")
+			'(b) Cost of Improvements
+			result_str = result_str & WriteEDI(CostOfImprovements,15,"E")
+			'Purpose of Refinance
+			result_str = result_str & WriteEDI(PurposeOfRefinance,2,"F")
+			'Describe Improvements
+			result_str = result_str & WriteEDI(DescribeImprovements,80,"F")
+			'(Describe Improvements) made/to be made
+			result_str = result_str & WriteEDI(DescImporvMadeToBeMade,1,"F")
+			'(Describe Improvements) Cost
+			result_str = result_str & WriteEDI(DescImporvCost,15,"E")
 			
-			For i=0 to 4-len(YearAcquired)-1
-			 YearAcquired = "&nbsp;" & YearAcquired 
-			Next
-			For i=0 to 15-len(OriginalCost)-1
-			 OriginalCost = "&nbsp;" & OriginalCost
-			Next
-			For i=0 to 15-len(AmtExistingLiens)-1
-			 AmtExistingLiens = "&nbsp;" & AmtExistingLiens
-			Next
-			For i=0 to 15-len(PresentValueOfLot)-1
-			 PresentValueOfLot = "&nbsp;" & PresentValueOfLot
-			Next
-			For i=0 to 15-len(CostOfImprovements)-1
-			 CostOfImprovements = "&nbsp;" & CostOfImprovements 
-			Next
-			For i=0 to 2-len(PurposeOfRefinance)-1
-			 PurposeOfRefinance = "&nbsp;" & PurposeOfRefinance
-			Next
-			For i=0 to 80-len(DescribeImprovements)-1
-			 DescribeImprovements = "&nbsp;" & DescribeImprovements
-			Next
-			For i=0 to 1-len(DescImporvMadeToBeMade)-1
-			 DescImporvMadeToBeMade = "&nbsp;" & DescImporvMadeToBeMade 
-			Next
-			For i=0 to 15-len(DescImporvCost)-1
-			 DescImporvCost = "&nbsp;" & DescImporvCost
-			Next
-			
-			Response.write record_id & YearAcquired & OriginalCost & AmtExistingLiens & PresentValueOfLot & CostOfImprovements &_
-			PurposeOfRefinance & DescribeImprovements & DescImporvMadeToBeMade & DescImporvCost & "<br>"
+			Response.write result_str & "<br>"
 		'------------------------------------------------
 		'- [02E]	II	 Down Payment
 		'------------------------------------------------
@@ -515,24 +416,26 @@ Do Until objEDI.AtEndOfStream
 			typeCode = Mid(record_line,4,2)
 			Set objDownPayment = GetDuplicateData(objApplication("Down Payment"),typeCode)
 			objDownPayment.Add "02E-020", Mid(record_line,4,2) 	'Down Payment Type Code [DownPaymentTypeCode]
-			objDownPayment.Add "02E-030", Mid(record_line,6,15) 'Down Payment Amount [DownPaymentamt]
+			objDownPayment.Add "02E-030", Mid(record_line,6,15) 'Down Payment Amount [DownPaymentAmt]
 			objDownPayment.Add "02E-040", Mid(record_line,21,80)'Down Payment Explanation [DownPaymentExplanation]
 			
 			DownPaymentTypeCode = Trim(Mid(record_line,4,2))
-			DownPaymentamt = Trim(Mid(record_line,6,15))
+			DownPaymentAmt = Trim(Mid(record_line,6,15))
 			DownPaymentExplanation = Trim(Mid(record_line,21,80))
+			'------------------------------------------------
+			'- [02E] Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("02E",3,"F")
+			'Down Payment Type Code
+			result_str = result_str & WriteEDI(DownPaymentTypeCode,2,"F")
+			'Down Payment Amount
+			result_str = result_str & WriteEDI(DownPaymentAmt,15,"F")
+			'Down Payment Explanation
+			result_str = result_str & WriteEDI(DownPaymentExplanation,80,"F")
 			
-			For i=0 to 2-len(DownPaymentTypeCode)-1
-			 DownPaymentTypeCode = "&nbsp;" & DownPaymentTypeCode
-			Next
-			For i=0 to 15-len(DownPaymentamt)-1
-			 DownPaymentamt = "&nbsp;" & DownPaymentamt
-			Next
-			For i=0 to 80-len(DownPaymentExplanation)-1
-			 DownPaymentExplanation = "&nbsp;" & DownPaymentExplanation
-			Next
-			
-			Response.write record_id & DownPaymentTypeCode & DownPaymentamt & DownPaymentExplanation & "<br>"
+			Response.write result_str & "<br>"
 		'------------------------------------------------
 		'- [07A]	VII	 Details of Transaction
 		'------------------------------------------------
@@ -560,64 +463,59 @@ Do Until objEDI.AtEndOfStream
 			SubordinateFinancing = Trim(Mid(record_line,124,15))
 			ClosingCostPaidBySeller = Trim(Mid(record_line,139,15))
 			PMIMIPFundingFeeFinan = Trim(Mid(record_line,154,15))
+			'------------------------------------------------
+			'- [07A] Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("07A",3,"F")
+			'a. Purchase price
+			result_str = result_str & WriteEDI(PurchasePrice,15,"E")
+			'b. Alterations, improvements, repairs
+			result_str = result_str & WriteEDI(AlterationsImprovRepair,15,"E")
+			'c. Land
+			result_str = result_str & WriteEDI(Land,15,"E")
+			'd. Refinance (Inc. debts to be paid off)
+			result_str = result_str & WriteEDI(Refinance,15,"E")
+			'e. Estimated prepaid items
+			result_str = result_str & WriteEDI(EstimatedPrepaidItems,15,"E")
+			'f. Estimated closing costs
+			result_str = result_str & WriteEDI(EstimatedClosingCosts,15,"E")
+			'g. PMI MIP, Funding Fee 
+			result_str = result_str & WriteEDI(PMIMIPFundingFee,15,"E")
+			'h. Discount
+			result_str = result_str & WriteEDI(Discount,15,"E")
+			'j. Subordinate financing
+			result_str = result_str & WriteEDI(SubordinateFinancing,15,"E")
+			'k. Applicant's closing costs paid by Seller
+			result_str = result_str & WriteEDI(ClosingCostPaidBySeller,15,"E")
+			'n. PMI, MIP, Funding Fee financed
+			result_str = result_str & WriteEDI(PMIMIPFundingFeeFinan,15,"E")
 			
-			For i=0 to 15-len(PurchasePrice)-1
-			 PurchasePrice = "&nbsp;" & PurchasePrice
-			Next
-			For i=0 to 15-len(AlterationsImprovRepair)-1
-			 AlterationsImprovRepair = "&nbsp;" & AlterationsImprovRepair
-			Next
-			For i=0 to 15-len(Land)-1
-			 Land = "&nbsp;" & Land
-			Next
-			For i=0 to 15-len(Refinance)-1
-			 Refinance = "&nbsp;" & Refinance
-			Next
-			For i=0 to 15-len(EstimatedPrepaidItems)-1
-			 EstimatedPrepaidItems = "&nbsp;" & EstimatedPrepaidItems
-			Next
-			For i=0 to 15-len(EstimatedClosingCosts)-1
-			 EstimatedClosingCosts = "&nbsp;" & EstimatedClosingCosts
-			Next
-			For i=0 to 15-len(PMIMIPFundingFee)-1
-			 PMIMIPFundingFee = "&nbsp;" & PMIMIPFundingFee
-			Next
-			For i=0 to 15-len(Discount)-1
-			 Discount = "&nbsp;" & Discount
-			Next
-			For i=0 to 15-len(SubordinateFinancing)-1
-			 SubordinateFinancing = "&nbsp;" & SubordinateFinancing
-			Next
-			For i=0 to 15-len(ClosingCostPaidBySeller)-1
-			 ClosingCostPaidBySeller = "&nbsp;" & ClosingCostPaidBySeller
-			Next
-			For i=0 to 15-len(PMIMIPFundingFeeFinan)-1
-			 PMIMIPFundingFeeFinan = "&nbsp;" & PMIMIPFundingFeeFinan
-			Next
-			
-			Response.write record_id & PurchasePrice & AlterationsImprovRepair & Land & Refinance &EstimatedPrepaidItems &_
-			EstimatedClosingCosts & PMIMIPFundingFee & Discount & SubordinateFinancing & ClosingCostPaidBySeller & PMIMIPFundingFeeFinan & "<br>"
-			
+			Response.write result_str & "<br>"
 		'------------------------------------------------
 		'- [07B]	VII	 Other Credits
 		'------------------------------------------------
 		Case "07B" 
 			typeCode = Mid(record_line,4,2)
-			Set objOtherCredit = GetDuplicateData(objApplication("Other Credit Type"),typeCode)
+			Set objOtherCredit = GetDuplicateData(objApplication("Other Credit"),typeCode)
 			objOtherCredit.Add "07B-020", Mid(record_line,4,2) 		'Other Credit Type Code [OtherCreditTypeCode]
 			objOtherCredit.Add "07B-030", Mid(record_line,6,15) 	'Amount of Other Credit [AmtOfOtherCredit]
 			
 			OtherCreditTypeCode = Trim(Mid(record_line,4,2))
 			AmtOfOtherCredit = Trim(Mid(record_line,6,15))
+			'------------------------------------------------
+			'- [07B] Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("07B",3,"F")
+			'Other Credit Type Code
+			result_str = result_str & WriteEDI(OtherCreditTypeCode,2,"F")
+			'Amount of Other Credit
+			result_str = result_str & WriteEDI(AmtOfOtherCredit,15,"E")
 			
-			For i=0 to 2-len(OtherCreditTypeCode)-1
-			 OtherCreditTypeCode = "&nbsp;" & OtherCreditTypeCode 
-			Next
-			For i=0 to 15-len(AmtOfOtherCredit)-1
-			 AmtOfOtherCredit = "&nbsp;" & AmtOfOtherCredit 
-			Next
-			
-			Response.write record_id & OtherCreditTypeCode & AmtOfOtherCredit & "<br>"
+			Response.write result_str & "<br>"
 		'------------------------------------------------
 		'- [10B]	X	 Loan Originator InFormation
 		'------------------------------------------------
@@ -645,43 +543,36 @@ Do Until objEDI.AtEndOfStream
 			LOCompanyStateCode = Trim(Mid(record_line,223,2))
 			LOCompanyZip = Trim(Mid(record_line,225,5))
 			LOCompanyZipFour = Trim(Mid(record_line,230,4))
+			'------------------------------------------------
+			'- [10B] Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("10B",3,"F")
+			'This application was taken by
+			result_str = result_str & WriteEDI(ThisAppWasTakenBy,1,"F")
+			'Loan Originator's Name
+			result_str = result_str & WriteEDI(LoanOriginatorName,60,"F")
+			'Interview Date
+			result_str = result_str & WriteEDI(InterviewDate,8,"F")
+			'Loan Originator's Phone Number
+			result_str = result_str & WriteEDI(LOPhoneNo,10,"F")
+			'Loan Origination Company's Name
+			result_str = result_str & WriteEDI(LOCompanyName,35,"F")
+			'Loan Origination Company's Street Address
+			result_str = result_str & WriteEDI(LOCompanyStAddr,35,"F")
+			'Loan Origination Company's Street Address 2
+			result_str = result_str & WriteEDI(LOCompanyStAddr2,35,"F")
+			'Loan Origination Company's City 
+			result_str = result_str & WriteEDI(LOCompanyCity,35,"F")
+			'Loan Origination Company's State Code
+			result_str = result_str & WriteEDI(LOCompanyStateCode,2,"F")
+			'Loan Origination Company's Zip Code
+			result_str = result_str & WriteEDI(LOCompanyZip,5,"F")
+			'Loan Origination Company's Zip Code Plus Four 
+			result_str = result_str & WriteEDI(LOCompanyZipFour,4,"F")
 			
-			For i=0 to 1-len(ThisAppWasTakenBy)-1
-			 ThisAppWasTakenBy = "&nbsp;" & ThisAppWasTakenBy
-			Next
-			For i=0 to 60-len(LoanOriginatorName)-1
-			 LoanOriginatorName =  LoanOriginatorName & "&nbsp;"
-			Next
-			For i=0 to 8-len(InterviewDate)-1
-			 InterviewDate = "&nbsp;" & InterviewDate 
-			Next
-			For i=0 to 10-len(LOPhoneNo)-1
-			 LOPhoneNo = "&nbsp;" & LOPhoneNo 
-			Next
-			For i=0 to 35-len(LOCompanyName)-1
-			 LOCompanyName = LOCompanyName & "&nbsp;"
-			Next
-			For i=0 to 35-len(LOCompanyStAddr)-1
-			 LOCompanyStAddr = LOCompanyStAddr & "&nbsp;"
-			Next
-			For i=0 to 35-len(LOCompanyStAddr2)-1
-			 LOCompanyStAddr2 = "&nbsp;" & LOCompanyStAddr2 
-			Next
-			For i=0 to 35-len(LOCompanyCity)-1
-			 LOCompanyCity = LOCompanyCity & "&nbsp;"
-			Next
-			For i=0 to 2-len(LOCompanyStateCode)-1
-			 LOCompanyStateCode = "&nbsp;" & LOCompanyStateCode 
-			Next
-			For i=0 to 5-len(LOCompanyZip)-1
-			 LOCompanyZip = "&nbsp;" & LOCompanyZip 
-			Next
-			For i=0 to 4-len(LOCompanyZipFour)-1
-			 LOCompanyZipFour = "&nbsp;" & LOCompanyZipFour 
-			Next
-			
-			Response.write record_id & ThisAppWasTakenBy & LoanOriginatorName & InterviewDate & LOPhoneNo & LOCompanyName & LOCompanyStAddr &_
-			LOCompanyStAddr2 & LOCompanyCity & LOCompanyStateCode & LOCompanyZip & LOCompanyZipFour & "<br>"
+			Response.write result_str & "<br>"
 		'--------------------------------------------------------------------------------------------------
 		'- [Applicant]
 		'--------------------------------------------------------------------------------------------------
@@ -692,7 +583,7 @@ Do Until objEDI.AtEndOfStream
 			ssn = Mid(record_line,6,9)
 			Set objApplicant = GetApplicant(objApplication("Applicant(s)"),ssn)
 			objApplicant.Add "03A-020", Mid(record_line,4,2) 		'Applicant / Co-Applicant Indicator [ApplicantIndicator]
-			objApplicant.Add "03A-040", Mid(record_line,15,35) 		'Applicant First Name [[ApplicantFirstName]
+			objApplicant.Add "03A-040", Mid(record_line,15,35) 		'Applicant First Name [ApplicantFirstName]
 			objApplicant.Add "03A-050", Mid(record_line,50,35) 		'Applicant Middle Name [ApplicantMidName]
 			objApplicant.Add "03A-060", Mid(record_line,85,35) 		'Applicant Last Name [ApplicantLastName]
 			objApplicant.Add "03A-070", Mid(record_line,120,4) 		'Applicant Generation [ApplicantGeneration]
@@ -720,52 +611,28 @@ Do Until objEDI.AtEndOfStream
 			CrossRefNumber = Trim(Mid(record_line,143,9))
 			DateOfBirth = Trim(Mid(record_line,152,8))
 			EmailAddr = Trim(Mid(record_line,160,80))
-			
-			For i=0 to 2-len(ApplicantIndicator)-1
-			 ApplicantIndicator = "&nbsp;" & ApplicantIndicator 
-			Next
-			For i=0 to 35-len(ApplicantFirstName)-1
-			 ApplicantFirstName = ApplicantFirstName & "&nbsp;"
-			Next
-			For i=0 to 35-len(ApplicantMidName)-1
-			 ApplicantMidName = ApplicantMidName & "&nbsp;"
-			Next
-			For i=0 to 35-len(ApplicantLastName)-1
-			 ApplicantLastName = ApplicantLastName & "&nbsp;"
-			Next
-			For i=0 to 4-len(ApplicantGeneration)-1
-			 ApplicantGeneration = "&nbsp;" & ApplicantGeneration 
-			Next
-			For i=0 to 10-len(HomePhone)-1
-			 HomePhone = HomePhone & "&nbsp;"
-			Next
-			For i=0 to 3-len(Age)-1
-			 Age = Age & "&nbsp;"
-			Next
-			For i=0 to 2-len(YrsSchool)-1
-			 YrsSchool = YrsSchool  & "&nbsp;"
-			Next
-			For i=0 to 1-len(MaritalStatus)-1
-			 MaritalStatus =  MaritalStatus & "&nbsp;"
-			Next
-			For i=0 to 2-len(DependantsNo)-1
-			 DependantsNo = DependantsNo & "&nbsp;"
-			Next
-			For i=0 to 1-len(CompletedJoinNotJoin)-1
-			 CompletedJoinNotJoin = ompletedJoinNotJoin & "&nbsp;"
-			Next
-			For i=0 to 9-len(CrossRefNumber)-1
-			 CrossRefNumber =CrossRefNumber & "&nbsp;"
-			Next
-			For i=0 to 8-len(DateOfBirth)-1
-			 DateOfBirth = DateOfBirth & "&nbsp;"
-			Next
-			For i=0 to 80-len(EmailAddr)-1
-			 EmailAddr = EmailAddr & "&nbsp;"
-			Next
-			
-			Response.write record_id  & ApplicantIndicator & ssn & ApplicantFirstName & ApplicantMidName & ApplicantLastName &_
-			ApplicantGeneration & HomePhone & Age & YrsSchool & MaritalStatus & DependantsNo & CompletedJoinNotJoin & CrossRefNumber & DateOfBirth & EmailAddr & "<br>"
+			'------------------------------------------------
+			'- [03A] Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("03A",3,"F")
+			result_str = result_str & WriteEDI(ApplicantIndicator,2,"F")
+			result_str = result_str & WriteEDI(ssn,9,"F")
+			result_str = result_str & WriteEDI(ApplicantFirstName,35,"F")
+			result_str = result_str & WriteEDI(ApplicantMidName,35,"F")
+			result_str = result_str & WriteEDI(ApplicantLastName,35,"F")
+			result_str = result_str & WriteEDI(ApplicantGeneration,4,"F")
+			result_str = result_str & WriteEDI(HomePhone,10,"F")
+			result_str = result_str & WriteEDI(Age,3,"F")
+			result_str = result_str & WriteEDI(YrsSchool,2,"F")
+			result_str = result_str & WriteEDI(MaritalStatus,1,"F")
+			result_str = result_str & WriteEDI(DependantsNo,2,"F")
+			result_str = result_str & WriteEDI(CompletedJoinNotJoin,1,"F")
+			result_str = result_str & WriteEDI(CrossRefNumber,9,"F")
+			result_str = result_str & WriteEDI(DateOfBirth,8,"F")
+			result_str = result_str & WriteEDI(EmailAddr,80,"F")
+			Response.write result_str & "<br>"
 		'------------------------------------------------
 		'- 03B	III	 Dependent's Age.
 		'------------------------------------------------
@@ -775,12 +642,15 @@ Do Until objEDI.AtEndOfStream
 			objApplicant.Add "03B-030", Mid(record_line,13,3) 		'Dependant's age [DependantsAge]
 			
 			DependantsAge = Trim(Mid(record_line,13,3))
-			
-			For i=0 to 3-len(DependantsAge)-1
-			 DependantsAge = DependantsAge & "&nbsp;" 
-			Next
-			
-			Response.write record_id & ssn & DependantsAge & "<br>"
+			'------------------------------------------------
+			'- [03B] Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("03B",3,"F")
+			result_str = result_str & WriteEDI(ssn,9,"F")
+			result_str = result_str & WriteEDI(DependantsAge,3,"F")
+			Response.write result_str & "<br>"
 		'------------------------------------------------
 		'- 03C	III	 Applicant(s) Address
 		'------------------------------------------------
@@ -798,7 +668,7 @@ Do Until objEDI.AtEndOfStream
 			objItem(strKey).Add "03C-090", Mid(record_line,111,1)	'Own/Rent/Living Rent Free [OwnRentLivingRentFree]
 			objItem(strKey).Add "03C-100", Mid(record_line,112,2)	'No. Yrs. [AddrNoYrs]
 			objItem(strKey).Add "03C-110", Mid(record_line,114,2)	'No. Months [AddrNoMonth]
-			objItem(strKey).Add "03C-120", Mid(record_line,116,50)	'Country [ApplicantAddrCounrtry]
+			objItem(strKey).Add "03C-120", Mid(record_line,116,50)	'Country [ApplicantAddrCountry]
 			
 			PresentFormer = Trim(Mid(record_line,13,2))	
 			ResidenceStAddr = Trim(Mid(record_line,15,50))	
@@ -808,43 +678,26 @@ Do Until objEDI.AtEndOfStream
 			ResidenceZipFour = Trim(Mid(record_line,107,4))	
 			OwnRentLivingRentFree = Trim(Mid(record_line,111,1))	
 			AddrNoYrs = Trim(Mid(record_line,112,2))	
-			AddrNoMonth = Trim(Mid(record_line,114,2))	
-			ApplicantAddrCounrtry = Trim(Mid(record_line,116,50))	
-			
-			For i=0 to 2-len(PresentFormer)-1
-			 PresentFormer = PresentFormer & "&nbsp;" 
-			Next
-			For i=0 to 50-len(ResidenceStAddr)-1
-			 ResidenceStAddr = ResidenceStAddr & "&nbsp;" 
-			Next
-			For i=0 to 35-len(ResidenceCity)-1
-			 ResidenceCity = ResidenceCity & "&nbsp;" 
-			Next
-			For i=0 to 2-len(ResidenceState)-1
-			 ResidenceState = ResidenceState & "&nbsp;" 
-			Next
-			For i=0 to 5-len(ResidenceZip)-1
-			 ResidenceZip = ResidenceZip & "&nbsp;" 
-			Next
-			For i=0 to 4-len(ResidenceZipFour)-1
-			 ResidenceZipFour = ResidenceZipFour & "&nbsp;" 
-			Next
-			For i=0 to 1-len(OwnRentLivingRentFree)-1
-			 OwnRentLivingRentFree = OwnRentLivingRentFree & "&nbsp;" 
-			Next
-			For i=0 to 2-len(AddrNoYrs)-1
-			 AddrNoYrs = AddrNoYrs & "&nbsp;" 
-			Next
-			For i=0 to 2-len(AddrNoMonth)-1
-			 AddrNoMonth = AddrNoMonth & "&nbsp;" 
-			Next
-			For i=0 to 50-len(ApplicantAddrCounrtry)-1
-			 ApplicantAddrCounrtry = ApplicantAddrCounrtry & "&nbsp;" 
-			Next
-			
-			Response.write record_id & ssn & PresentFormer & ResidenceStAddr & ResidenceCity & ResidenceState & ResidenceZip & ResidenceZipFour &_
-			OwnRentLivingRentFree & AddrNoYrs & AddrNoMonth & ApplicantAddrCounrtry & "<br>"
-			
+			AddrNoMonth = Trim(Mid(record_line,114,2))
+			ApplicantAddrCountry = Trim(Mid(record_line,116,50))	
+			'------------------------------------------------
+			'- [03C] Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("03C",3,"F")
+			result_str = result_str & WriteEDI(ssn,9,"F")
+			result_str = result_str & WriteEDI(PresentFormer,2,"F")
+			result_str = result_str & WriteEDI(ResidenceStAddr,50,"F")
+			result_str = result_str & WriteEDI(ResidenceCity,35,"F")
+			result_str = result_str & WriteEDI(ResidenceState,2,"F")
+			result_str = result_str & WriteEDI(ResidenceZip,5,"F")
+			result_str = result_str & WriteEDI(ResidenceZipFour,4,"F")
+			result_str = result_str & WriteEDI(OwnRentLivingRentFree,1,"F")
+			result_str = result_str & WriteEDI(AddrNoYrs,2,"F")
+			result_str = result_str & WriteEDI(AddrNoMonth,2,"F")
+			result_str = result_str & WriteEDI(ApplicantAddrCountry,50,"F")
+			Response.write result_str & "<br>"
 		'------------------------------------------------
 		'- 04A	IV	 Primary Current Employer(s)
 		'------------------------------------------------
@@ -876,46 +729,26 @@ Do Until objEDI.AtEndOfStream
 			YrsEmpInThisLineWork =Trim(Mid(record_line,134,2))
 			PositionTitleTypeBiz =Trim(Mid(record_line,136,25))
 			BizPhone =Trim(Mid(record_line,161,10))
-			
-			For i=0 to 35-len(EmpName)-1
-			 EmpName = EmpName & "&nbsp;" 
-			Next
-			For i=0 to 35-len(EmpStAddr)-1
-			 EmpStAddr = EmpStAddr & "&nbsp;" 
-			Next
-			For i=0 to 35-len(EmpCity)-1
-			 EmpCity = EmpCity & "&nbsp;"
-			Next
-			For i=0 to 2-len(EmpState)-1
-			 EmpState = "&nbsp;" & EmpState
-			Next
-			For i=0 to 5-len(EmpZip)-1
-			 EmpZip = "&nbsp;" & EmpZip
-			Next
-			For i=0 to 4-len(EmpZipFour)-1
-			 EmpZipFour = "&nbsp;" & EmpZipFour
-			Next
-			For i=0 to 1-len(SelfEmployed)-1
-			 SelfEmployed = "&nbsp;" & SelfEmployed
-			Next
-			For i=0 to 2-len(YrsOnThisJob)-1
-			 YrsOnThisJob = "&nbsp;" & YrsOnThisJob
-			Next
-			For i=0 to 2-len(MonthsOnThisJob)-1
-			 MonthsOnThisJob =  MonthsOnThisJob & "&nbsp;" 
-			Next
-			For i=0 to 2-len(YrsEmpInThisLineWork)-1
-			 YrsEmpInThisLineWork = "&nbsp;" & YrsEmpInThisLineWork
-			Next
-			For i=0 to 25-len(PositionTitleTypeBiz)-1
-			 PositionTitleTypeBiz = PositionTitleTypeBiz & "&nbsp;" 
-			Next
-			For i=0 to 10-len(BizPhone)-1
-			 BizPhone = "&nbsp;" & BizPhone
-			Next
-			
-			Response.write record_id & ssn & EmpName & EmpStAddr & EmpCity & EmpState & EmpZip & EmpZipFour & SelfEmployed &_
-			YrsOnThisJob & MonthsOnThisJob & YrsEmpInThisLineWork & PositionTitleTypeBiz & BizPhone & "<br>"
+			'------------------------------------------------
+			'- [04A] Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("04A",3,"F")
+			result_str = result_str & WriteEDI(ssn,9,"F")
+			result_str = result_str & WriteEDI(EmpName,35,"F")
+			result_str = result_str & WriteEDI(EmpStAddr,35,"F")
+			result_str = result_str & WriteEDI(EmpCity,35,"F")
+			result_str = result_str & WriteEDI(EmpState,2,"F")
+			result_str = result_str & WriteEDI(EmpZip,5,"F")
+			result_str = result_str & WriteEDI(EmpZipFour,4,"F")
+			result_str = result_str & WriteEDI(SelfEmployed,1,"F")
+			result_str = result_str & WriteEDI(YrsOnThisJob,2,"F")
+			result_str = result_str & WriteEDI(MonthsOnThisJob,2,"F")
+			result_str = result_str & WriteEDI(YrsEmpInThisLineWork,2,"F")
+			result_str = result_str & WriteEDI(PositionTitleTypeBiz,25,"F")
+			result_str = result_str & WriteEDI(BizPhone,10,"F")
+			Response.write result_str & "<br>"
 		'------------------------------------------------
 		'- 04B	IV	 Secondary/Previous Employer(s)
 		'------------------------------------------------
@@ -951,49 +784,27 @@ Do Until objEDI.AtEndOfStream
 			SPrevMonthlyIncome = Trim(Mid(record_line,147,15))
 			SPrevPositionTitleTypeBiz = Trim(Mid(record_line,162,25))
 			SPrevBizPhone = Trim(Mid(record_line,187,10))
-			
-			For i=0 to 35-len(SPrevEmpName)-1
-			 SPrevEmpName = SPrevEmpName & "&nbsp;" 
-			Next
-			For i=0 to 35-len(SPrevEmpStAddr)-1
-			 SPrevEmpStAddr = SPrevEmpStAddr & "&nbsp;" 
-			Next
-			For i=0 to 35-len(SPrevEmpCity)-1
-			 SPrevEmpCity = SPrevEmpCity & "&nbsp;"
-			Next
-			For i=0 to 2-len(SPrevEmpState)-1
-			 SPrevEmpState = "&nbsp;" & SPrevEmpState
-			Next
-			For i=0 to 5-len(SPrevEmpZip)-1
-			 SPrevEmpZip = "&nbsp;" & SPrevEmpZip
-			Next
-			For i=0 to 4-len(SPrevEmpZipFour)-1
-			 SPrevEmpZipFour = "&nbsp;" & SPrevEmpZipFour
-			Next
-			For i=0 to 1-len(SPrevSelfEmployed)-1
-			 SPrevSelfEmployed = "&nbsp;" & SPrevSelfEmployed
-			Next
-			For i=0 to 1-len(SPrevCurrentEmpFlag)-1
-			 SPrevCurrentEmpFlag = "&nbsp;" & SPrevCurrentEmpFlag
-			Next
-			For i=0 to 8-len(SPrevFromDate)-1
-			 SPrevFromDate = "&nbsp;" & SPrevFromDate
-			Next
-			For i=0 to 8-len(SPrevToDate)-1
-			 SPrevToDate = "&nbsp;" & SPrevToDate
-			Next
-			For i=0 to 15-len(SPrevMonthlyIncome)-1
-			 SPrevMonthlyIncome = "&nbsp;" & SPrevMonthlyIncome
-			Next
-			For i=0 to 25-len(SPrevPositionTitleTypeBiz)-1
-			 SPrevPositionTitleTypeBiz = SPrevPositionTitleTypeBiz & "&nbsp;" 
-			Next
-			For i=0 to 10-len(SPrevBizPhone)-1
-			 SPrevBizPhone= "&nbsp;" & SPrevBizPhone
-			Next
-			
-			Response.write record_id & ssn & SPrevEmpName & SPrevEmpStAddr & SPrevEmpCity & SPrevEmpState & SPrevEmpZip & SPrevEmpZipFour & SPrevSelfEmployed &_
-			SPrevCurrentEmpFlag & SPrevFromDate & SPrevToDate & SPrevMonthlyIncome & SPrevPositionTitleTypeBiz & SPrevBizPhone & "<br>"
+			'------------------------------------------------
+			'- [04B] Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("04B",3,"F")
+			result_str = result_str & WriteEDI(ssn,9,"F")
+			result_str = result_str & WriteEDI(SPrevEmpName,35,"F")
+			result_str = result_str & WriteEDI(SPrevEmpStAddr,35,"F")
+			result_str = result_str & WriteEDI(SPrevEmpCity,35,"F")
+			result_str = result_str & WriteEDI(SPrevEmpState,2,"F")
+			result_str = result_str & WriteEDI(SPrevEmpZip,5,"F")
+			result_str = result_str & WriteEDI(SPrevEmpZipFour,4,"F")
+			result_str = result_str & WriteEDI(SPrevSelfEmployed,1,"F")
+			result_str = result_str & WriteEDI(SPrevCurrentEmpFlag,1,"F")
+			result_str = result_str & WriteEDI(SPrevFromDate,8,"F")
+			result_str = result_str & WriteEDI(SPrevToDate,8,"F")
+			result_str = result_str & WriteEDI(SPrevMonthlyIncome,15,"E")
+			result_str = result_str & WriteEDI(SPrevPositionTitleTypeBiz,25,"F")
+			result_str = result_str & WriteEDI(SPrevBizPhone,10,"F")
+			Response.write result_str & "<br>"
 		'------------------------------------------------
 		'- 05H	V	 Present/Proposed Housing Expense 
 		'------------------------------------------------
@@ -1009,18 +820,17 @@ Do Until objEDI.AtEndOfStream
 			HousingExpensePresentIndicator = Trim(Mid(record_line,13,1))
 			HousingPaymentTypeCode = Trim(Mid(record_line,14,2))
 			HousingPaymentAmt = Trim(Mid(record_line,16,15))
-
-			For i=0 to 1-len(HousingExpensePresentIndicator)-1
-			 HousingExpensePresentIndicator = "&nbsp;" & HousingExpensePresentIndicator
-			Next
-			For i=0 to 2-len(HousingPaymentTypeCode)-1
-			 HousingPaymentTypeCode = "&nbsp;" & HousingPaymentTypeCode
-			Next
-			For i=0 to 15-len(HousingPaymentAmt)-1
-			 HousingPaymentAmt = "&nbsp;" & HousingPaymentAmt
-			Next
-			
-			Response.write record_id & ssn & HousingExpensePresentIndicator & HousingPaymentTypeCode & HousingPaymentAmt & "<br>"
+			'------------------------------------------------
+			'- [05H] Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("05H",3,"F")
+			result_str = result_str & WriteEDI(ssn,9,"F")
+			result_str = result_str & WriteEDI(HousingExpensePresentIndicator,1,"F")
+			result_str = result_str & WriteEDI(HousingPaymentTypeCode,2,"F")
+			result_str = result_str & WriteEDI(HousingPaymentAmt,15,"E")
+			Response.write result_str & "<br>"
 		'------------------------------------------------
 		'- 05I	V	 Income
 		'------------------------------------------------
@@ -1034,15 +844,16 @@ Do Until objEDI.AtEndOfStream
 			
 			TypeOfIncomeCode = Trim(Mid(record_line,13,2))
 			IncomeAmt = Trim(Mid(record_line,15,15))
-			
-			For i=0 to 2-len(TypeOfIncomeCode)-1
-			 TypeOfIncomeCode = "&nbsp;" & TypeOfIncomeCode
-			Next
-			For i=0 to 15-len(IncomeAmt)-1
-			 IncomeAmt = "&nbsp;" & IncomeAmt
-			Next
-			
-			Response.write record_id & ssn & TypeOfIncomeCode & IncomeAmt & "<br>"
+			'------------------------------------------------
+			'- [05I] Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("05I",3,"F")
+			result_str = result_str & WriteEDI(ssn,9,"F")
+			result_str = result_str & WriteEDI(TypeOfIncomeCode,2,"F")
+			result_str = result_str & WriteEDI(IncomeAmt,15,"E")
+			Response.write result_str & "<br>"
 		'------------------------------------------------
 		'- 06A	VI	 For all asset types, enter data in the 06C assets segment.
 		'------------------------------------------------	
@@ -1054,15 +865,16 @@ Do Until objEDI.AtEndOfStream
 			
 			CashDepositPurcHeldBy = Trim(Mid(record_line,13,35))
 			CashOrMarketValue = Trim(Mid(record_line,48,15))
-			
-			For i=0 to 35-len(CashDepositPurcHeldBy)-1
-			 CashDepositPurcHeldBy = "&nbsp;" & CashDepositPurcHeldBy
-			Next
-			For i=0 to 15-len(CashOrMarketValue)-1
-			 CashOrMarketValue = "&nbsp;" & CashOrMarketValue
-			Next
-			
-			Response.write record_id & ssn & CashDepositPurcHeldBy & CashOrMarketValue & "<br>"
+			'------------------------------------------------
+			'- [06A] Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("06A",3,"F")
+			result_str = result_str & WriteEDI(ssn,9,"F")
+			result_str = result_str & WriteEDI(CashDepositPurcHeldBy,35,"F")
+			result_str = result_str & WriteEDI(CashOrMarketValue,15,"E")
+			Response.write result_str & "<br>"
 		'------------------------------------------------
 		'- 06B	VI	 Life Insurance
 		'------------------------------------------------
@@ -1076,18 +888,17 @@ Do Until objEDI.AtEndOfStream
 			LifeInsurAcctNo = Trim(Mid(record_line,13,30))
 			LifeInsurCashMarketVal = Trim(Mid(record_line,43,15))
 			LifeInsurFaceAmt = Trim(Mid(record_line,58,15))
-			
-			For i=0 to 30-len(LifeInsurAcctNo)-1
-			 LifeInsurAcctNo = "&nbsp;" & LifeInsurAcctNo
-			Next
-			For i=0 to 15-len(LifeInsurCashMarketVal)-1
-			 LifeInsurCashMarketVal = "&nbsp;" & LifeInsurCashMarketVal
-			Next
-			For i=0 to 15-len(LifeInsurFaceAmt)-1
-			 LifeInsurFaceAmt = "&nbsp;" & LifeInsurFaceAmt
-			Next
-			
-			Response.write record_id & ssn & LifeInsurAcctNo  & LifeInsurCashMarketVal & LifeInsurFaceAmt & "<br>"
+			'------------------------------------------------
+			'- [06B] Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("06B",3,"F")
+			result_str = result_str & WriteEDI(ssn,9,"F")
+			result_str = result_str & WriteEDI(LifeInsurAcctNo,30,"F")
+			result_str = result_str & WriteEDI(LifeInsurCashMarketVal,15,"E")
+			result_str = result_str & WriteEDI(LifeInsurFaceAmt,15,"E")
+			Response.write result_str & "<br>"
 		'------------------------------------------------
 		'- 06C	VI	 Assets
 		'------------------------------------------------
@@ -1119,43 +930,25 @@ Do Until objEDI.AtEndOfStream
 			AssetCashMarketVal = Trim( Mid(record_line,162,15))
 			NumberOfStockBondShares = Trim(Mid(record_line,177,7))
 			AssetDesc = Trim(Mid(record_line,184,80))
-			
-			For i=0 to 3-len(AccountAssetType)-1
-			 AccountAssetType =  AccountAssetType & "&nbsp;"
-			Next
-			For i=0 to 35-len(DepositoryStockBondName)-1
-			 DepositoryStockBondName = DepositoryStockBondName & "&nbsp;"
-			Next
-			For i=0 to 35-len(DepositoryStAddr)-1
-			 DepositoryStAddr = "&nbsp;" & DepositoryStAddr
-			Next
-			For i=0 to 35-len(DepositoryCity)-1
-			 DepositoryCity = "&nbsp;" & DepositoryCity
-			Next
-			For i=0 to 2-len(DepositoryState)-1
-			 DepositoryState = "&nbsp;" & DepositoryState
-			Next
-			For i=0 to 5-len(DepositoryZip)-1
-			 DepositoryZip = "&nbsp;" & DepositoryZip
-			Next
-			For i=0 to 4-len(DepositoryZipFour)-1
-			 DepositoryZipFour = "&nbsp;" & DepositoryZipFour
-			Next
-			For i=0 to 30-len(AssetAcctNo)-1
-			 AssetAcctNo = AssetAcctNo & "&nbsp;"
-			Next
-			For i=0 to 15-len(AssetCashMarketVal)-1
-			 AssetCashMarketVal = "&nbsp;" & AssetCashMarketVal
-			Next
-			For i=0 to 7-len(NumberOfStockBondShares)-1
-			 NumberOfStockBondShares = NumberOfStockBondShares & "&nbsp;"
-			Next
-			For i=0 to 80-len(AssetDesc)-1
-			 AssetDesc = "&nbsp;" & AssetDesc
-			Next
-			
-			Response.write record_id & ssn & AccountAssetType & DepositoryStockBondName & DepositoryStAddr & DepositoryCity & DepositoryState &_
-			DepositoryZip & DepositoryZipFour & AssetAcctNo & AssetCashMarketVal & NumberOfStockBondShares & AssetDesc & "<br>"
+			'------------------------------------------------
+			'- [06C] Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("06C",3,"F")
+			result_str = result_str & WriteEDI(ssn,9,"F")
+			result_str = result_str & WriteEDI(AccountAssetType,3,"F")
+			result_str = result_str & WriteEDI(DepositoryStockBondName,35,"F")
+			result_str = result_str & WriteEDI(DepositoryStAddr,35,"F")
+			result_str = result_str & WriteEDI(DepositoryCity,35,"F")
+			result_str = result_str & WriteEDI(DepositoryState,2,"F")
+			result_str = result_str & WriteEDI(DepositoryZip,5,"F")
+			result_str = result_str & WriteEDI(DepositoryZipFour,4,"F")
+			result_str = result_str & WriteEDI(AssetAcctNo,30,"F")
+			result_str = result_str & WriteEDI(AssetCashMarketVal,15,"E")
+			result_str = result_str & WriteEDI(NumberOfStockBondShares,7,"E")
+			result_str = result_str & WriteEDI(AssetDesc,80,"F")
+			Response.write result_str & "<br>"
 		'------------------------------------------------
 		'- 06D	VI	 Automobile(s)
 		'------------------------------------------------
@@ -1171,18 +964,17 @@ Do Until objEDI.AtEndOfStream
 			AutomobileMakeModel = Trim(Mid(record_line,13,30))
 			AutomobileYear = Trim(Mid(record_line,43,4))
 			AutomobileCashMarketVal = Trim(Mid(record_line,47,15))
-			
-			For i=0 to 30-len(AutomobileMakeModel)-1
-			 AutomobileMakeModel = AutomobileMakeModel & "&nbsp;"
-			Next
-			For i=0 to 4-len(AutomobileYear)-1
-			 AutomobileYear = "&nbsp;" & AutomobileYear
-			Next
-			For i=0 to 15-len(AutomobileCashMarketVal)-1
-			 AutomobileCashMarketVal = "&nbsp;" & AutomobileCashMarketVal
-			Next
-			
-			Response.write record_id & ssn & AutomobileMakeModel & AutomobileYear & AutomobileCashMarketVal & "<br>"
+			'------------------------------------------------
+			'- [06D] Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("06D",3,"F")
+			result_str = result_str & WriteEDI(ssn,9,"F")
+			result_str = result_str & WriteEDI(AutomobileMakeModel,30,"F")
+			result_str = result_str & WriteEDI(AutomobileYear,4,"F")
+			result_str = result_str & WriteEDI(AutomobileCashMarketVal,15,"E")
+			Response.write result_str & "<br>"
 		'------------------------------------------------
 		'- 06F	VI	 Alimony, Child Support/ Separate Maintenance and/or Job Related Expense(s)
 		'------------------------------------------------
@@ -1200,21 +992,18 @@ Do Until objEDI.AtEndOfStream
 			MonthlyPaymentAmt = Trim(Mid(record_line,16,15))
 			MonthsLeftToPay = Trim(Mid(record_line,31,3))
 			AlimonyCSSperateOwedTo = Trim(Mid(record_line,34,60))
-			
-			For i=0 to 3-len(ExpenseTypeCode)-1
-			 ExpenseTypeCode = ExpenseTypeCode & "&nbsp;"
-			Next
-			For i=0 to 15-len(MonthlyPaymentAmt)-1
-			 MonthlyPaymentAmt = "&nbsp;" & MonthlyPaymentAmt
-			Next
-			For i=0 to 3-len(MonthsLeftToPay)-1
-			 MonthsLeftToPay = "&nbsp;" & MonthsLeftToPay
-			Next
-			For i=0 to 60-len(AlimonyCSSperateOwedTo)-1
-			 AlimonyCSSperateOwedTo = "&nbsp;" & AlimonyCSSperateOwedTo
-			Next
-			
-			Response.write record_id & ssn & ExpenseTypeCode & MonthlyPaymentAmt & MonthsLeftToPay & AlimonyCSSperateOwedTo & "<br>"
+			'------------------------------------------------
+			'- [06F] Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("06F",3,"F")
+			result_str = result_str & WriteEDI(ssn,9,"F")
+			result_str = result_str & WriteEDI(ExpenseTypeCode,3,"F")
+			result_str = result_str & WriteEDI(MonthlyPaymentAmt,15,"F")
+			result_str = result_str & WriteEDI(MonthsLeftToPay,3,"E")
+			result_str = result_str & WriteEDI(AlimonyCSSperateOwedTo,60,"E")
+			Response.write result_str & "<br>"
 		'------------------------------------------------
 		'- 06G	VI	 Real Estate Owned
 		'------------------------------------------------
@@ -1235,7 +1024,7 @@ Do Until objEDI.AtEndOfStream
 			objItem(strKey).Add "06G-120", Mid(record_line,127,15)	'Gross Rental Income [REOGrossRentalIncome]
 			objItem(strKey).Add "06G-130", Mid(record_line,142,15)	'Mortgage Payments [REOMortgagePayment]
 			objItem(strKey).Add "06G-140", Mid(record_line,157,15)	'Insurance, Maintenance Taxes & Misc. [InsurMaintenanceTaxMisc]
-			objItem(strKey).Add "06G-150", Mid(record_line,172,25)	'Net Rental Income [REONetRentalIncome]
+			objItem(strKey).Add "06G-150", Mid(record_line,172,15)	'Net Rental Income [REONetRentalIncome]
 			objItem(strKey).Add "06G-160", Mid(record_line,187,1)	'Current Residence Indicator [REOCurResidenceIndicator]
 			objItem(strKey).Add "06G-170", Mid(record_line,188,1)	'Subject Property Indicator [REOSubjectPropIndicator]
 			objItem(strKey).Add "06G-180", Mid(record_line,189,2)	'REO Asset ID [REOAssetID]
@@ -1253,67 +1042,37 @@ Do Until objEDI.AtEndOfStream
 			REOGrossRentalIncome = Trim(Mid(record_line,127,15))	
 			REOMortgagePayment = Trim(Mid(record_line,142,15))	
 			InsurMaintenanceTaxMisc = Trim(Mid(record_line,157,15))	
-			REONetRentalIncome = Trim( Mid(record_line,172,25))	
+			REONetRentalIncome = Trim( Mid(record_line,172,15))	
 			REOCurResidenceIndicator = Trim(Mid(record_line,187,1))	
 			REOSubjectPropIndicator = Trim(Mid(record_line,188,1))	
 			REOAssetID = Trim(Mid(record_line,189,2))	
 			REOReservedFutureUse = Trim(Mid(record_line,191,15))	
 			
-			For i=0 to 35-len(REOPropStAddr)-1
-			 REOPropStAddr = REOPropStAddr & "&nbsp;" 
-			Next
-			For i=0 to 35-len(REOPropCity)-1
-			 REOPropCity = REOPropCity & "&nbsp;"
-			Next
-			For i=0 to 2-len(REOPropState)-1
-			 REOPropState = "&nbsp;" & REOPropState
-			Next
-			For i=0 to 5-len(REOPropZip)-1
-			 REOPropZip = "&nbsp;" & REOPropZip
-			Next
-			For i=0 to 4-len(REOPropZipFour)-1
-			 REOPropZipFour = "&nbsp;" & REOPropZipFour
-			Next
-			For i=0 to 1-len(REOPropDisposition)-1
-			 REOPropDisposition = "&nbsp;" & REOPropDisposition
-			Next
-			For i=0 to 2-len(REOTypeOfProp)-1
-			 REOTypeOfProp = "&nbsp;" & REOTypeOfProp
-			Next
-			For i=0 to 15-len(REOPresentMarketValue)-1
-			 REOPresentMarketValue = REOPresentMarketValue & "&nbsp;"
-			Next
-			For i=0 to 15-len(REOAmtMortgageLiens)-1
-			 REOAmtMortgageLiens = REOAmtMortgageLiens & "&nbsp;"
-			Next
-			For i=0 to 15-len(REOGrossRentalIncome)-1
-			 REOGrossRentalIncome = REOGrossRentalIncome & "&nbsp;"
-			Next
-			For i=0 to 15-len(REOMortgagePayment)-1
-			 REOMortgagePayment = REOMortgagePayment & "&nbsp;"
-			Next
-			For i=0 to 15-len(InsurMaintenanceTaxMisc)-1
-			 InsurMaintenanceTaxMisc = InsurMaintenanceTaxMisc & "&nbsp;"
-			Next
-			For i=0 to 25-len(REONetRentalIncome)-1
-			 REONetRentalIncome = REONetRentalIncome & "&nbsp;"
-			Next
-			For i=0 to 1-len(REOCurResidenceIndicator)-1
-			 REOCurResidenceIndicator = "&nbsp;" & REOCurResidenceIndicator
-			Next
-			For i=0 to 1-len(REOSubjectPropIndicator)-1
-			 REOSubjectPropIndicator =  "&nbsp;" & REOSubjectPropIndicator
-			Next
-			For i=0 to 2-len(REOAssetID)-1
-			 REOAssetID = "&nbsp;" & REOAssetID
-			Next
-			For i=0 to 15-len(REOReservedFutureUse)-1
-			 REOReservedFutureUse = "&nbsp;" & REOReservedFutureUse
-			Next
-			
-			Response.write record_id & ssn & REOPropStAddr & REOPropCity & REOPropState & REOPropZip & REOPropZipFour & REOPropDisposition &_
-			REOTypeOfProp & REOPresentMarketValue & REOAmtMortgageLiens & REOGrossRentalIncome & REOMortgagePayment & InsurMaintenanceTaxMisc &_
-			REONetRentalIncome & REOCurResidenceIndicator & REOSubjectPropIndicator & REOAssetID & REOReservedFutureUse & "<br>"
+			'------------------------------------------------
+			'- [06G] Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("06G",3,"F")
+			result_str = result_str & WriteEDI(ssn,9,"F")
+			result_str = result_str & WriteEDI(REOPropStAddr,35,"F")
+			result_str = result_str & WriteEDI(REOPropCity,35,"F")
+			result_str = result_str & WriteEDI(REOPropState,2,"F")
+			result_str = result_str & WriteEDI(REOPropZip,5,"F")
+			result_str = result_str & WriteEDI(REOPropZipFour,4,"F")
+			result_str = result_str & WriteEDI(REOPropDisposition,1,"F")
+			result_str = result_str & WriteEDI(REOTypeOfProp,2,"F")
+			result_str = result_str & WriteEDI(REOPresentMarketValue,15,"F")
+			result_str = result_str & WriteEDI(REOAmtMortgageLiens,15,"F")
+			result_str = result_str & WriteEDI(REOGrossRentalIncome,15,"F")
+			result_str = result_str & WriteEDI(REOMortgagePayment,15,"F")
+			result_str = result_str & WriteEDI(InsurMaintenanceTaxMisc,15,"F")
+			result_str = result_str & WriteEDI(REONetRentalIncome,15,"F")
+			result_str = result_str & WriteEDI(REOCurResidenceIndicator,1,"F")
+			result_str = result_str & WriteEDI(REOSubjectPropIndicator,1,"F")
+			result_str = result_str & WriteEDI(REOAssetID,2,"F")
+			result_str = result_str & WriteEDI(REOReservedFutureUse,15,"F")
+			Response.write result_str & "<br>"
 		'------------------------------------------------
 		'- 06H	VI	 Alias
 		'------------------------------------------------
@@ -1331,24 +1090,19 @@ Do Until objEDI.AtEndOfStream
 			AliasLastName = Trim(Mid(record_line,83,35))
 			ReservedFutureUse6_1 = Trim(Mid(record_line,118,15))
 			ReservedFutureUse6_2 = Trim(Mid(record_line,153,15))
-			
-			For i=0 to 35-len(AliasFirstName)-1
-			 AliasFirstName = "&nbsp;" & AliasFirstName
-			Next
-			For i=0 to 35-len(AliasMidName)-1
-			 AliasMidName = "&nbsp;" & AliasMidName
-			Next
-			For i=0 to 35-len(AliasLastName)-1
-			 AliasLastName = "&nbsp;" & AliasLastName
-			Next
-			For i=0 to 15-len(ReservedFutureUse6_1)-1
-			 ReservedFutureUse6_1 = "&nbsp;" & ReservedFutureUse6_1
-			Next
-			For i=0 to 15-len(ReservedFutureUse6_2)-1
-			 ReservedFutureUse6_2 = "&nbsp;" & ReservedFutureUse6_2
-			Next
-			
-			Response.write record_id & ssn & AliasFirstName & AliasMidName & AliasLastName &ReservedFutureUse6_1 &  ReservedFutureUse6_2 & "<br>"
+			'------------------------------------------------
+			'- [06H] Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("06H",3,"F")
+			result_str = result_str & WriteEDI(ssn,9,"F")
+			result_str = result_str & WriteEDI(AliasFirstName,35,"F")
+			result_str = result_str & WriteEDI(AliasMidName,35,"F")
+			result_str = result_str & WriteEDI(AliasLastName,35,"F")
+			result_str = result_str & WriteEDI(ReservedFutureUse6_1,15,"E")
+			result_str = result_str & WriteEDI(ReservedFutureUse6_2,15,"E")
+			Response.write result_str & "<br>"
 		'------------------------------------------------
 		'- 06L	VI	 Liabilities
 		'------------------------------------------------
@@ -1392,62 +1146,31 @@ Do Until objEDI.AtEndOfStream
 			OmittedIndicator = Trim(Mid(record_line,198,1))
 			SubjectPropIndicator = Trim(Mid(record_line,199,1))
 			RentalPropIndicator = Trim(Mid(record_line,200,1))
-			
-			For i=0 to 2-len(LiabilityType)-1
-			 LiabilityType = LiabilityType & "&nbsp;" 
-			Next
-			For i=0 to 35-len(CreditorName)-1
-			 CreditorName = CreditorName & "&nbsp;" 
-			Next
-			For i=0 to 35-len(CreditorStAddr)-1
-			 CreditorStAddr = CreditorStAddr & "&nbsp;" 
-			Next
-			For i=0 to 35-len(CreditorCity)-1
-			 CreditorCity = CreditorCity & "&nbsp;" 
-			Next
-			For i=0 to 2-len(CreditorState)-1
-			 CreditorState = "&nbsp;" & CreditorState
-			Next
-			For i=0 to 5-len(CreditorZip)-1
-			 CreditorZip = "&nbsp;" & CreditorZip
-			Next
-			For i=0 to 4-len(CreditorZipFour)-1
-			 CreditorZipFour = "&nbsp;" & CreditorZipFour
-			Next
-			For i=0 to 30-len(LiabilityAcctNo)-1
-			 LiabilityAcctNo = LiabilityAcctNo & "&nbsp;" 
-			Next
-			For i=0 to 15-len(LiabilityMonPaymentAmt)-1
-			 LiabilityMonPaymentAmt = "&nbsp;" & LiabilityMonPaymentAmt
-			Next
-			For i=0 to 3-len(LiabilityMonLeftToPay)-1
-			 LiabilityMonLeftToPay = "&nbsp;" & LiabilityMonLeftToPay
-			Next
-			For i=0 to 15-len(UnpaidBalance)-1
-			 UnpaidBalance = "&nbsp;" &UnpaidBalance
-			Next
-			For i=0 to 1-len(LiabilityPaidClosing)-1
-			 LiabilityPaidClosing = "&nbsp;" & LiabilityPaidClosing 
-			Next
-			For i=0 to 2-len(REOAssetID)-1
-			 REOAssetID = "&nbsp;" & REOAssetID 
-			Next
-			For i=0 to 1-len(ResubordinatedIndicator)-1
-			 ResubordinatedIndicator = "&nbsp;" &ResubordinatedIndicator 
-			Next
-			For i=0 to 1-len(OmittedIndicator)-1
-			 OmittedIndicator = OmittedIndicator & "&nbsp;" 
-			Next
-			For i=0 to 1-len(SubjectPropIndicator)-1
-			 SubjectPropIndicator  = "&nbsp;" & SubjectPropIndicator 
-			Next
-			For i=0 to 1-len(RentalPropIndicator)-1
-			 RentalPropIndicator = "&nbsp;" &RentalPropIndicator
-			Next
-			
-			Response.write record_id & ssn & LiabilityType & CreditorName & CreditorStAddr & CreditorCity & CreditorState & CreditorZip & CreditorZipFour &_
-			LiabilityAcctNo & LiabilityMonPaymentAmt & LiabilityMonLeftToPay & UnpaidBalance & LiabilityPaidClosing & REOAssetID & ResubordinatedIndicator &_
-			OmittedIndicator & SubjectPropIndicator & RentalPropIndicator & "<br>"
+			'------------------------------------------------
+			'- [06L] Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("06L",3,"F")
+			result_str = result_str & WriteEDI(ssn,9,"F")
+			result_str = result_str & WriteEDI(LiabilityType,2,"F")
+			result_str = result_str & WriteEDI(CreditorName,35,"F")
+			result_str = result_str & WriteEDI(CreditorStAddr,35,"F")
+			result_str = result_str & WriteEDI(CreditorCity,35,"F")
+			result_str = result_str & WriteEDI(CreditorState,2,"F")
+			result_str = result_str & WriteEDI(CreditorZip,5,"F")
+			result_str = result_str & WriteEDI(CreditorZipFour,4,"F")
+			result_str = result_str & WriteEDI(LiabilityAcctNo,30,"F")
+			result_str = result_str & WriteEDI(LiabilityMonPaymentAmt,15,"E")
+			result_str = result_str & WriteEDI(LiabilityMonLeftToPay,3,"E")
+			result_str = result_str & WriteEDI(UnpaidBalance,15,"E")
+			result_str = result_str & WriteEDI(LiabilityPaidClosing,1,"F")
+			result_str = result_str & WriteEDI(REOAssetID,2,"F")
+			result_str = result_str & WriteEDI(ResubordinatedIndicator,1,"F")
+			result_str = result_str & WriteEDI(OmittedIndicator,1,"F")
+			result_str = result_str & WriteEDI(SubjectPropIndicator,1,"F")
+			result_str = result_str & WriteEDI(RentalPropIndicator,1,"F")
+			Response.write result_str & "<br>"
 		'------------------------------------------------ 
 		'- 06S	VI	 Undrawn HELOC and IPCs
 		'------------------------------------------------
@@ -1504,52 +1227,29 @@ Do Until objEDI.AtEndOfStream
 			DeclarationsM1 = Trim(Mid(record_line,26,1))
 			DeclarationsM2 = Trim(Mid(record_line,27,2))
 			
-			For i=0 to 1-len(DeclarationsA)-1
-			 DeclarationsA = "&nbsp;" & DeclarationsA
-			Next
-			For i=0 to 1-len(DeclarationsB)-1
-			 DeclarationsB = "&nbsp;" & DeclarationsB
-			Next
-			For i=0 to 1-len(DeclarationsC)-1
-			 DeclarationsC = "&nbsp;" & DeclarationsC
-			Next
-			For i=0 to 1-len(DeclarationsD)-1
-			 DeclarationsD = "&nbsp;" & DeclarationsD
-			Next
-			For i=0 to 1-len(DeclarationsE)-1
-			 DeclarationsE = "&nbsp;" & DeclarationsE
-			Next
-			For i=0 to 1-len(DeclarationsF)-1
-			 DeclarationsF = "&nbsp;" & DeclarationsF
-			Next
-			For i=0 to 1-len(DeclarationsG)-1
-			 DeclarationsG = "&nbsp;" & DeclarationsG
-			Next
-			For i=0 to 1-len(DeclarationsH)-1
-			 DeclarationsH = "&nbsp;" & DeclarationsH
-			Next
-			For i=0 to 1-len(DeclarationsI)-1
-			 DeclarationsI = "&nbsp;" & DeclarationsI
-			Next
-			For i=0 to 2-len(DeclarationsJ)-1
-			 DeclarationsJ = "&nbsp;" & DeclarationsJ
-			Next
-			For i=0 to 1-len(DeclarationsL)-1
-			 DeclarationsL = "&nbsp;" & DeclarationsL
-			Next
-			For i=0 to 1-len(DeclarationsM)-1
-			 DeclarationsM = "&nbsp;" & DeclarationsM
-			Next
-			For i=0 to 1-len(DeclarationsM1)-1
-			 DeclarationsM1 = "&nbsp;" & DeclarationsM1
-			Next
-			For i=0 to 2-len(DeclarationsM2)-1
-			 DeclarationsM2 = "&nbsp;" & DeclarationsM2
-			Next
-			
-			Response.write record_id & ssn & DeclarationsA & DeclarationsB & DeclarationsC & DeclarationsD & DeclarationsE &_
-			DeclarationsF & DeclarationsG & DeclarationsH & DeclarationsI & DeclarationsJ &DeclarationsL & DeclarationsM &_
-			DeclarationsM1 & DeclarationsM2 & "<br>"
+			'------------------------------------------------
+			'- 08A	VIII	Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("08A",3,"F")
+			'Borrower SSN
+			result_str = result_str & WriteEDI(ssn,9,"F")
+			result_str = result_str & WriteEDI(DeclarationsA,1,"F")
+			result_str = result_str & WriteEDI(DeclarationsB,1,"F")
+			result_str = result_str & WriteEDI(DeclarationsC,1,"F")
+			result_str = result_str & WriteEDI(DeclarationsD,1,"F")
+			result_str = result_str & WriteEDI(DeclarationsE,1,"F")
+			result_str = result_str & WriteEDI(DeclarationsF,1,"F")
+			result_str = result_str & WriteEDI(DeclarationsG,1,"F")
+			result_str = result_str & WriteEDI(DeclarationsH,1,"F")
+			result_str = result_str & WriteEDI(DeclarationsI,1,"F")
+			result_str = result_str & WriteEDI(DeclarationsJ,2,"F")
+			result_str = result_str & WriteEDI(DeclarationsL,1,"F")
+			result_str = result_str & WriteEDI(DeclarationsM,1,"F")
+			result_str = result_str & WriteEDI(DeclarationsM1,1,"F")
+			result_str = result_str & WriteEDI(DeclarationsM2,2,"F")
+			Response.write result_str & "<br>"
 		'------------------------------------------------
 		'- 08B	VIII Declaration Explanations
 		'------------------------------------------------
@@ -1563,15 +1263,17 @@ Do Until objEDI.AtEndOfStream
 			
 			DeclarationTypeCode = Trim(Mid(record_line,13,2))
 			DeclarationExplanation = Trim(Mid(record_line,15,255))
-			
-			For i=0 to 2-len(DeclarationTypeCode)-1
-			 DeclarationTypeCode = DeclarationTypeCode & "&nbsp;"
-			Next
-			For i=0 to 255-len(DeclarationExplanation)-1
-			 DeclarationExplanation = DeclarationExplanation & "&nbsp;"
-			Next
-			
-			Response.write record_id & ssn & DeclarationTypeCode & "&nbsp;" & DeclarationExplanation & "<br>"
+			'------------------------------------------------
+			'- 08B	VIII	Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("08B",3,"F")
+			'Borrower SSN
+			result_str = result_str & WriteEDI(ssn,9,"F")
+			result_str = result_str & WriteEDI(DeclarationTypeCode,2,"F")
+			result_str = result_str & WriteEDI(DeclarationExplanation,255,"F")
+			Response.write result_str & "<br>"
 		'------------------------------------------------
 		'- 09A	IX	 Acknowledgment and Agreement
 		'------------------------------------------------
@@ -1581,12 +1283,16 @@ Do Until objEDI.AtEndOfStream
 			objApplicant.Add "09A-030", Mid(record_line,13,8) 'Signature Date [SignatureDate]
 			
 			SignatureDate = Trim(Mid(record_line,13,8))
-			
-			For i=0 to 8-len(SignatureDate)-1
-			 SignatureDate = "&nbsp;" & SignatureDate
-			Next
-			
-			Response.write record_id & ssn & SignatureDate & "<br>"
+			'------------------------------------------------
+			'- 09A	IX	 Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("09A",3,"F")
+			'Borrower SSN
+			result_str = result_str & WriteEDI(ssn,9,"F")
+			result_str = result_str & WriteEDI(SignatureDate,8,"F")
+			Response.write result_str & "<br>"
 		'------------------------------------------------
 		'- 10A	X	 InFormation For Government Monitoring Purposes
 		'------------------------------------------------
@@ -1602,21 +1308,24 @@ Do Until objEDI.AtEndOfStream
 			Ethnicity = Trim(Mid(record_line,14,1))
 			Filler = Trim( Mid(record_line,15,30))
 			Sex = Trim(Mid(record_line,45,1))
+			'------------------------------------------------
+			'- 10A	X	 Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("10A",3,"F")
+			'Borrower SSN
+			result_str = result_str & WriteEDI(ssn,9,"F")
+			'I do not wish to furnish this inFormation
+			result_str = result_str & WriteEDI(IDoNotFurnishMyInfo,1,"F")
+			'Ethnicity
+			result_str = result_str & WriteEDI(Ethnicity,1,"F")
+			'Filler
+			result_str = result_str & WriteEDI(Filler,30,"F")
+			'Sex
+			result_str = result_str & WriteEDI(Sex,1,"F")
 			
-			For i=0 to 1-len(IDoNotFurnishMyInfo)-1
-			 IDoNotFurnishMyInfo = "&nbsp;" & IDoNotFurnishMyInfo
-			Next
-			For i=0 to 1-len(Ethnicity)-1
-			 Ethnicity = "&nbsp;" & Ethnicity
-			Next
-			For i=0 to 30-len(Filler)-1
-			 Filler = "&nbsp;" & Filler
-			Next
-			For i=0 to 1-len(Sex)-1
-			 Sex = "&nbsp;" & Sex
-			Next
-			
-			Response.write record_id & ssn & IDoNotFurnishMyInfo & Ethnicity & Filler & Sex &"<br>"
+			Response.write result_str & "<br>"
 		'------------------------------------------------
 		'- 10R	X	 InFormation For Government Monitoring Purposes
 		'------------------------------------------------
@@ -1626,20 +1335,51 @@ Do Until objEDI.AtEndOfStream
 			objApplicant.Add "10R-030", Mid(record_line,13,2)	'Race type [RaceType]
 			
 			RaceType = Trim(Mid(record_line,13,2))
+			'------------------------------------------------
+			'- 10R	X	 Printing EDI
+			'------------------------------------------------
+			result_str = ""
+			'Header
+			result_str = result_str & WriteEDI("10R",3,"F")
+			'Borrower SSN
+			result_str = result_str & WriteEDI(ssn,9,"F")
+			'Race type
+			result_str = result_str & WriteEDI(RaceType,2,"F")
 			
-			For i=0 to 1-len(RaceType)-1
-			 RaceType = "&nbsp;" & RaceType
-			Next
-			
-			Response.write record_id & ssn & RaceType &"<br>"
+			Response.write result_str & "<br>"
 	End Select
 
 Loop
-'------------------------------------------------
-'- Printing Application
-'------------------------------------------------
+'================================================
+'= Printing EDI Footer
+'================================================
+	'------------------------------------------------
+	'- 000 line
+	'------------------------------------------------
+	result_str = ""
+	'Header
+	result_str = result_str & WriteEDI("000",3,"F")
+	result_str = result_str & WriteEDI("11",3,"F")
+	result_str = result_str & WriteEDI("3.20",5,"F")
+	Response.write result_str & "<br>"
+	'------------------------------------------------
+	'- TT line
+	'------------------------------------------------
+	result_str = ""
+	result_str = result_str & WriteEDI("TT",3,"F")
+	result_str = result_str & WriteEDI("1",9,"F")
+	Response.write result_str & "<br>"
+	'------------------------------------------------
+	'- ET line
+	'------------------------------------------------
+	result_str = ""
+	result_str = result_str & WriteEDI("ET",3,"F")
+	result_str = result_str & WriteEDI("0",9,"F")
+	Response.write result_str & "<br>"
+'================================================
+'= Printing Application
+'================================================
 Call PrintApplication(objApplication)
-
 '##################################################################################################
 '# Unloading Page
 '##################################################################################################
@@ -1698,7 +1438,7 @@ Sub PrintApplication(ByRef objApplication)
 					Next
 				Next
 			Case "Other Credit Type" '07B
-				print_dupicate_code("Other Credit Type")
+				print_dupicate_code("Other Credit")
 			Case "Title Holder" '02C
 				print_dupicate_code("Title Holder")
 			Case "Down Payment" '02E
@@ -1783,10 +1523,25 @@ Function GetDuplicateData(ByRef obj_type, ByVal code)
 	Set GetDuplicateData = obj_type(code)
 End Function
 '==================================================================================================
+'= WriteEDI
+'==================================================================================================
+Function WriteEDI(str, length, direction)
+	Dim space : space = ""
+	For i=len(str) To length-1
+		space = space & "&nbsp;"
+	Next
+	If direction = "F" Then
+		str = str & space
+	ElseIf direction = "E" Then
+		str = space & str
+	End If
+	WriteEDI = str
+End Function
+'==================================================================================================
 '= LeftCut
 '==================================================================================================
 Function LeftCut(strString, intCut)
-    dim intPos, chrTemp, strCut, intLength
+    Dim intPos, chrTemp, strCut, intLength
     'Initial String length 
     intLength = 0
     intPos = 1
